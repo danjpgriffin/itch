@@ -1,6 +1,45 @@
 import pygame
 
-print("Hello World")
+
+def on(receiver):
+    def decorator(function):
+        receiver.event_handlers[function.__name__] = function
+
+    return decorator
+
+class Sprite:
+    def __init__(self):
+        self.x = 0
+        self.y = 0
+        self.image = pygame.image.load("cat.png")
+        self.centre_x = int(self.image.get_bounding_rect().width/2)
+        self.centre_y = int(self.image.get_bounding_rect().height/2)
+        self.event_handlers = {}
+
+    def change_x_by(self, amount):
+        self.x = self.x + amount
+
+    def change_y_by(self, amount):
+        self.y = self.y + amount
+
+cat = Sprite()
+
+@on(cat)
+def when_left_arrow_key_pressed(sprite):
+    sprite.change_x_by(-10)
+
+@on(cat)
+def when_right_arrow_key_pressed(sprite):
+    sprite.change_x_by(10)
+
+@on(cat)
+def when_up_arrow_key_pressed(sprite):
+    sprite.change_y_by(-10)
+
+@on(cat)
+def when_down_arrow_key_pressed(sprite):
+    sprite.change_y_by(10)
+
 pygame.init()
 screen = pygame.display.set_mode((700,500))
 pygame.display.set_caption("Hello World")
@@ -11,12 +50,6 @@ WHITE = (255, 255, 255)
 
 done = False
 clock = pygame.time.Clock()
-
-cat = pygame.image.load("cat.png")
-catw = cat.get_bounding_rect().width
-cath = cat.get_bounding_rect().height
-catmx = int(catw/2)
-catmy = int(cath/2)
 
 def to_real_coord(coords, offx, offy):
     (x, y) = coords
@@ -35,30 +68,27 @@ def to_scratch_coord(coords):
 def read_mouse():
     return to_scratch_coord(pygame.mouse.get_pos())
 
-x = 0
-y = 0
-
 while not done:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         if event.type == pygame.KEYDOWN:
-            #print(event.key)
             if event.key == 275:
-                x = x + 10
+                cat.event_handlers["when_right_arrow_key_pressed"](cat)
+
             if event.key == 276:
-                x = x - 10
+                cat.event_handlers["when_left_arrow_key_pressed"](cat)
             if event.key == 273:
-                y = y - 10
+                cat.event_handlers["when_up_arrow_key_pressed"](cat)
             if event.key == 274:
-                y = y + 10
+                cat.event_handlers["when_down_arrow_key_pressed"](cat)
 
     screen.fill(WHITE)
 
     #player_position = read_mouse()
 
-    screen.blit(cat, to_real_coord([x,y], catmx, catmy))
+    screen.blit(cat.image, to_real_coord([cat.x,cat.y], cat.centre_x, cat.centre_y))
     pygame.display.flip()
     clock.tick(60)
 
