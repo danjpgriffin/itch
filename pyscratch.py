@@ -1,5 +1,12 @@
 import pygame
-import builtins
+
+sprite_list = []
+
+
+def new_sprite():
+    sprite = Sprite()
+    sprite_list.append(sprite)
+    return sprite
 
 
 def script(receiver):
@@ -7,8 +14,6 @@ def script(receiver):
         receiver.event_handlers[function.__name__] = function
 
     return decorator
-
-builtins.script = script
 
 
 class Sprite:
@@ -25,19 +30,6 @@ class Sprite:
 
     def change_y_by(self, amount):
         self.y = self.y + amount
-
-builtins.Sprite = Sprite
-
-pygame.init()
-screen = pygame.display.set_mode((700,500))
-pygame.display.set_caption("Hello World")
-
-pygame.key.set_repeat(1, 5)
-
-WHITE = (255, 255, 255)
-
-done = False
-clock = pygame.time.Clock()
 
 
 def to_real_coord(coords, offx, offy):
@@ -59,29 +51,45 @@ def to_scratch_coord(coords):
 def read_mouse():
     return to_scratch_coord(pygame.mouse.get_pos())
 
-from main import cat
+
+WHITE = (255, 255, 255)
 
 
-while not done:
+def click_green_flag():
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            done = True
-        if event.type == pygame.KEYDOWN:
-            if event.key == 275:
-                cat.event_handlers["when_right_arrow_key_pressed"](cat)
+    pygame.init()
+    screen = pygame.display.set_mode((700,500))
+    pygame.display.set_caption("Hello World")
 
-            if event.key == 276:
-                cat.event_handlers["when_left_arrow_key_pressed"](cat)
-            if event.key == 273:
-                cat.event_handlers["when_up_arrow_key_pressed"](cat)
-            if event.key == 274:
-                cat.event_handlers["when_down_arrow_key_pressed"](cat)
+    pygame.key.set_repeat(1, 5)
+    clock = pygame.time.Clock()
 
-    screen.fill(WHITE)
+    done = False
+    while not done:
 
-    # player_position = read_mouse()
+        sprite = sprite_list[0]
 
-    screen.blit(cat.image, to_real_coord([cat.x, cat.y], cat.centre_x, cat.centre_y))
-    pygame.display.flip()
-    clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == 275:
+                    sprite.event_handlers["when_right_arrow_key_pressed"](sprite)
+
+                if event.key == 276:
+                    sprite.event_handlers["when_left_arrow_key_pressed"](sprite)
+                if event.key == 273:
+                    sprite.event_handlers["when_up_arrow_key_pressed"](sprite)
+                if event.key == 274:
+                    sprite.event_handlers["when_down_arrow_key_pressed"](sprite)
+
+        if not done:
+            screen.fill(WHITE)
+
+            # player_position = read_mouse()
+
+            screen.blit(sprite.image, to_real_coord([sprite.x, sprite.y], sprite.centre_x, sprite.centre_y))
+            pygame.display.flip()
+            clock.tick(60)
+        else:
+            pygame.quit()
