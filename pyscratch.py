@@ -21,6 +21,7 @@ class Sprite:
     def __init__(self, filename, x, y):
         self.x = x
         self.y = y
+        self.direction = 90
         self.image = pygame.image.load(filename)
         self.centre_x = int(self.image.get_bounding_rect().width/2)
         self.centre_y = int(self.image.get_bounding_rect().height/2)
@@ -32,6 +33,19 @@ class Sprite:
     def change_y_by(self, amount):
         self.y = self.y + amount
 
+    def move_steps(self, steps):
+        if self.direction == 90:
+            self.x = self.x + steps
+
+        if self.direction == 180:
+            self.x = self.x - steps
+
+    def if_on_edge_bounce(self):
+        if to_real_coord((self.x, self.y), self.centre_x, self.centre_y)[0] + self.image.get_bounding_rect().width > 700 and self.direction == 90:
+            self.direction = 180
+
+        if to_real_coord((self.x, self.y), self.centre_x, self.centre_y)[0] <= 0 and self.direction == 180:
+            self.direction = 90
 
 def to_real_coord(coords, offx, offy):
     (x, y) = coords
@@ -73,6 +87,8 @@ def click_green_flag():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.KEYDOWN:
+                    if event.key == 32 and "when_space_key_pressed" in sprite.event_handlers:
+                        sprite.event_handlers["when_space_key_pressed"](sprite)
                     if event.key == 275 and "when_right_arrow_key_pressed" in sprite.event_handlers:
                         sprite.event_handlers["when_right_arrow_key_pressed"](sprite)
                     if event.key == 276 and "when_left_arrow_key_pressed" in sprite.event_handlers:
