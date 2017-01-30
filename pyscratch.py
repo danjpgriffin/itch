@@ -3,24 +3,25 @@ import pygame
 sprite_list = []
 
 
-def new_sprite():
-    sprite = Sprite()
+def new_sprite(filename, x=0, y=0):
+    sprite = Sprite(filename, x, y)
     sprite_list.append(sprite)
     return sprite
 
 
-def script(receiver):
+def script(*receivers):
     def decorator(function):
-        receiver.event_handlers[function.__name__] = function
+        for receiver in receivers:
+            receiver.event_handlers[function.__name__] = function
 
     return decorator
 
 
 class Sprite:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.image = pygame.image.load("cat.png")
+    def __init__(self, filename, x, y):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load(filename)
         self.centre_x = int(self.image.get_bounding_rect().width/2)
         self.centre_y = int(self.image.get_bounding_rect().height/2)
         self.event_handlers = {}
@@ -37,7 +38,7 @@ def to_real_coord(coords, offx, offy):
     cx = int(700/2)
     cy = int(500/2)
 
-    return cx + x - offx, cy + y - offy
+    return cx + x - offx, cy - y - offy
 
 
 def to_scratch_coord(coords):
@@ -58,7 +59,7 @@ WHITE = (255, 255, 255)
 def click_green_flag():
 
     pygame.init()
-    screen = pygame.display.set_mode((700,500))
+    screen = pygame.display.set_mode((700, 500))
     pygame.display.set_caption("Hello World")
 
     pygame.key.set_repeat(1, 5)
@@ -67,28 +68,26 @@ def click_green_flag():
     done = False
     while not done:
 
-        sprite = sprite_list[0]
-
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-            if event.type == pygame.KEYDOWN:
-                if event.key == 275:
-                    sprite.event_handlers["when_right_arrow_key_pressed"](sprite)
-
-                if event.key == 276:
-                    sprite.event_handlers["when_left_arrow_key_pressed"](sprite)
-                if event.key == 273:
-                    sprite.event_handlers["when_up_arrow_key_pressed"](sprite)
-                if event.key == 274:
-                    sprite.event_handlers["when_down_arrow_key_pressed"](sprite)
+            for sprite in sprite_list:
+                if event.type == pygame.QUIT:
+                    done = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == 275 and "when_right_arrow_key_pressed" in sprite.event_handlers:
+                        sprite.event_handlers["when_right_arrow_key_pressed"](sprite)
+                    if event.key == 276 and "when_left_arrow_key_pressed" in sprite.event_handlers:
+                        sprite.event_handlers["when_left_arrow_key_pressed"](sprite)
+                    if event.key == 273 and "when_up_arrow_key_pressed" in sprite.event_handlers:
+                        sprite.event_handlers["when_up_arrow_key_pressed"](sprite)
+                    if event.key == 274 and "when_down_arrow_key_pressed" in sprite.event_handlers:
+                        sprite.event_handlers["when_down_arrow_key_pressed"](sprite)
 
         if not done:
             screen.fill(WHITE)
 
-            # player_position = read_mouse()
+            for sprite in sprite_list:
+                screen.blit(sprite.image, to_real_coord([sprite.x, sprite.y], sprite.centre_x, sprite.centre_y))
 
-            screen.blit(sprite.image, to_real_coord([sprite.x, sprite.y], sprite.centre_x, sprite.centre_y))
             pygame.display.flip()
             clock.tick(60)
         else:

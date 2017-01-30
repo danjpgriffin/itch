@@ -2,4 +2,4 @@ import cairosvg
 
 print(dir(cairosvg))
 
-cairosvg.svg2png(url="/home/daneva/sandbox/pyscratch/cat.svg", write_to="/tmp/cat.png")
+cairosvg.svg2png(url="/home/daneva/sandbox/pyscratch/fish.svg", write_to="/tmp/fish.png")
