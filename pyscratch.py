@@ -1,8 +1,10 @@
 import pygame
 
 from threading import Thread, Condition
+from concurrent.futures import ThreadPoolExecutor
 
 sprite_list = []
+executor = ThreadPoolExecutor(max_workers=20)
 event_lock = Condition()
 
 
@@ -29,26 +31,21 @@ class Sprite:
         self.centre_x = int(self.image.get_bounding_rect().width/2)
         self.centre_y = int(self.image.get_bounding_rect().height/2)
         self.event_handlers = {}
-        self.event_threads = {}
+        self.event_futures = {}
         self.lock = lock
 
     def queue_event(self, event_name):
 
-        if event_name in self.event_threads:
+        if event_name in self.event_futures:
             return
 
         def event_handler():
             with self.lock:
                 self.event_handlers[event_name](self)
+                del self.event_futures[event_name]
 
-                me = self.event_threads[event_name]
-                print(me)
-                del self.event_threads[event_name]
-                del me
-
-        thread = Thread(target=event_handler, daemon=True)
-        self.event_threads[event_name] = thread
-        thread.start()
+        future = executor.submit(event_handler)
+        self.event_futures[event_name] = future
 
     def trigger_event(self, event_name):
         if event_name in self.event_handlers:
@@ -107,7 +104,7 @@ def click_green_flag():
 
     pygame.init()
     screen = pygame.display.set_mode((700, 500))
-    pygame.display.set_caption("Hello World")
+    pygame.display.set_caption("Hello Itch")
 
     pygame.key.set_repeat(1, 5)
     clock = pygame.time.Clock()
@@ -139,9 +136,10 @@ def click_green_flag():
                 for sprite in sprite_list:
                     screen.blit(sprite.image, to_real_coord([sprite.x, sprite.y], sprite.centre_x, sprite.centre_y))
 
+                event_lock.notify_all()
                 pygame.display.flip()
                 clock.tick(60)
             else:
+                executor.shutdown(wait=False)
                 pygame.quit()
 
-            event_lock.notify_all()
