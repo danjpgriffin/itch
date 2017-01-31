@@ -1,15 +1,11 @@
 import pygame
-
-from threading import Thread, Condition
-from concurrent.futures import ThreadPoolExecutor
+from greenlet import greenlet
 
 sprite_list = []
-executor = ThreadPoolExecutor(max_workers=20)
-event_lock = Condition()
 
 
 def new_sprite(filename, x=0, y=0):
-    sprite = Sprite(filename, x, y, event_lock)
+    sprite = Sprite(filename, x, y)
     sprite_list.append(sprite)
     return sprite
 
@@ -23,7 +19,7 @@ def script(*receivers):
 
 
 class Sprite:
-    def __init__(self, filename, x, y, lock):
+    def __init__(self, filename, x, y):
         self.x = x
         self.y = y
         self.direction = 90
@@ -31,21 +27,19 @@ class Sprite:
         self.centre_x = int(self.image.get_bounding_rect().width/2)
         self.centre_y = int(self.image.get_bounding_rect().height/2)
         self.event_handlers = {}
-        self.event_futures = {}
-        self.lock = lock
+        self.event_greenlets = {}
 
     def queue_event(self, event_name):
 
-        if event_name in self.event_futures:
+        if event_name in self.event_greenlets:
             return
 
         def event_handler():
-            with self.lock:
-                self.event_handlers[event_name](self)
-                del self.event_futures[event_name]
+            self.event_handlers[event_name](self)
+            del self.event_greenlets[event_name]
 
-        future = executor.submit(event_handler)
-        self.event_futures[event_name] = future
+        g = greenlet(event_handler)
+        self.event_greenlets[event_name] = g
 
     def trigger_event(self, event_name):
         if event_name in self.event_handlers:
@@ -53,11 +47,11 @@ class Sprite:
 
     def change_x_by(self, amount):
         self.x = self.x + amount
-        self.lock.wait()
+        greenlet.getcurrent().parent.switch()
 
     def change_y_by(self, amount):
         self.y = self.y + amount
-        self.lock.wait()
+        greenlet.getcurrent().parent.switch()
 
     def move_steps(self, steps):
         if self.direction == 90:
@@ -66,7 +60,7 @@ class Sprite:
         if self.direction == 180:
             self.x = self.x - steps
 
-        self.lock.wait()
+        greenlet.getcurrent().parent.switch()
 
     def if_on_edge_bounce(self):
         if to_real_coord((self.x, self.y), self.centre_x, self.centre_y)[0] + self.image.get_bounding_rect().width > 700 and self.direction == 90:
@@ -75,7 +69,8 @@ class Sprite:
         if to_real_coord((self.x, self.y), self.centre_x, self.centre_y)[0] <= 0 and self.direction == 180:
             self.direction = 90
 
-        self.lock.wait()
+        greenlet.getcurrent().parent.switch()
+
 
 def to_real_coord(coords, offx, offy):
     (x, y) = coords
@@ -112,34 +107,34 @@ def click_green_flag():
     done = False
     while not done:
 
-        with event_lock:
-            for event in pygame.event.get():
-                for sprite in sprite_list:
-                    if event.type == pygame.QUIT:
-                        done = True
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == 32:
-                            sprite.trigger_event("when_space_key_pressed")
-                        if event.key == 275:
-                            sprite.trigger_event("when_right_arrow_key_pressed")
-                        if event.key == 276:
-                            sprite.trigger_event("when_left_arrow_key_pressed")
-                        if event.key == 273:
-                            sprite.trigger_event("when_up_arrow_key_pressed")
-                        if event.key == 274:
-                            sprite.trigger_event("when_down_arrow_key_pressed")
+        for event in pygame.event.get():
+            for sprite in sprite_list:
+                if event.type == pygame.QUIT:
+                    done = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == 32:
+                        sprite.trigger_event("when_space_key_pressed")
+                    if event.key == 275:
+                        sprite.trigger_event("when_right_arrow_key_pressed")
+                    if event.key == 276:
+                        sprite.trigger_event("when_left_arrow_key_pressed")
+                    if event.key == 273:
+                        sprite.trigger_event("when_up_arrow_key_pressed")
+                    if event.key == 274:
+                        sprite.trigger_event("when_down_arrow_key_pressed")
 
-        with event_lock:
-            if not done:
-                screen.fill(WHITE)
+        for sprite in sprite_list:
+            for g in [v for v in sprite.event_greenlets.values()]:
+                g.switch()
 
-                for sprite in sprite_list:
-                    screen.blit(sprite.image, to_real_coord([sprite.x, sprite.y], sprite.centre_x, sprite.centre_y))
+        if not done:
+            screen.fill(WHITE)
 
-                event_lock.notify_all()
-                pygame.display.flip()
-                clock.tick(60)
-            else:
-                executor.shutdown(wait=False)
-                pygame.quit()
+            for sprite in sprite_list:
+                screen.blit(sprite.image, to_real_coord([sprite.x, sprite.y], sprite.centre_x, sprite.centre_y))
+
+            pygame.display.flip()
+            clock.tick(60)
+        else:
+            pygame.quit()
 

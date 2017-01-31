@@ -1,7 +1,7 @@
 from pyscratch import *
 cat = new_sprite("cat.png", -150, 100)
 fish = new_sprite("fish.png", 150, 0)
-
+fish2 = new_sprite("fish.png", -150, 0)
 
 @script(cat)
 def when_left_arrow_key_pressed(sprite):
@@ -23,7 +23,7 @@ def when_down_arrow_key_pressed(sprite):
     sprite.change_y_by(-10)
 
 
-@script(fish)
+@script(fish, fish2)
 def when_space_key_pressed(sprite):
     while True:
         sprite.move_steps(10)
