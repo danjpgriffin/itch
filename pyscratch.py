@@ -112,6 +112,22 @@ def read_mouse():
 WHITE = (255, 255, 255)
 
 
+def scratch_dir_to_degrees(sd):
+    norm = sd % 360
+
+    if sd > 180:
+        norm = norm - 360
+
+    if norm <= 0:
+        norm = abs(norm)
+    else:
+        norm = 360 - norm
+    return norm + 90
+
+for x in range(-200, 500):
+    print (x, scratch_dir_to_degrees(x))
+
+
 def click_green_flag():
 
     pygame.init()
@@ -151,7 +167,7 @@ def click_green_flag():
 
             for sprite in sprite_list:
 
-                transformed = pygame.transform.rotate(sprite.image, sprite.direction - 90)
+                transformed = pygame.transform.rotate(sprite.image, scratch_dir_to_degrees(sprite.direction))
 
                 screen.blit(transformed, sprite.to_real_coord_img(transformed, (sprite.x, sprite.y)))
 
