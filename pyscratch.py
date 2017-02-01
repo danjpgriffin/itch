@@ -1,4 +1,5 @@
 import pygame
+import math
 from greenlet import greenlet
 
 sprite_list = []
@@ -52,11 +53,9 @@ class Sprite:
         greenlet.getcurrent().parent.switch()
 
     def move_steps(self, steps):
-        if self.direction == 90:
-            self.x = self.x + steps
 
-        if self.direction == 270:
-            self.x = self.x - steps
+        self.x = (math.cos(math.radians(scratch_dir_to_degrees(self.direction))) * steps) + self.x
+        self.y = (math.sin(math.radians(scratch_dir_to_degrees(self.direction))) * steps) + self.y
 
         greenlet.getcurrent().parent.switch()
 
@@ -124,10 +123,6 @@ def scratch_dir_to_degrees(sd):
         norm = 360 - norm
     return norm + 90
 
-for x in range(-200, 500):
-    print (x, scratch_dir_to_degrees(x))
-
-
 def click_green_flag():
 
     pygame.init()
@@ -145,8 +140,9 @@ def click_green_flag():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.KEYDOWN:
-                    if event.key == 114:
-                        sprite.trigger_event("when_r_key_pressed")
+                    #print(event.key)
+                    if 97 <= event.key <= 122:
+                        sprite.trigger_event("when_" + chr(event.key) + "_key_pressed")
                     if event.key == 32:
                         sprite.trigger_event("when_space_key_pressed")
                     if event.key == 275:

@@ -3,6 +3,14 @@ cat = new_sprite("cat.png", -150, 100)
 fish = new_sprite("fish.png", 150, 0)
 fish2 = new_sprite("fish.png", -150, 0)
 
+@script(cat)
+def when_m_key_pressed(sprite):
+    sprite.move_steps(10)
+
+
+@script(cat)
+def when_l_key_pressed(sprite):
+    sprite.turn_degrees(-10)
 
 @script(cat)
 def when_r_key_pressed(sprite):
