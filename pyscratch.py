@@ -24,8 +24,6 @@ class Sprite:
         self.y = y
         self.direction = 90
         self.image = pygame.image.load(filename)
-        self.centre_x = int(self.image.get_bounding_rect().width/2)
-        self.centre_y = int(self.image.get_bounding_rect().height/2)
         self.event_handlers = {}
         self.event_greenlets = {}
 
@@ -57,27 +55,46 @@ class Sprite:
         if self.direction == 90:
             self.x = self.x + steps
 
-        if self.direction == 180:
+        if self.direction == 270:
             self.x = self.x - steps
 
         greenlet.getcurrent().parent.switch()
 
     def if_on_edge_bounce(self):
-        if to_real_coord((self.x, self.y), self.centre_x, self.centre_y)[0] + self.image.get_bounding_rect().width > 700 and self.direction == 90:
-            self.direction = 180
+        if self.to_real_coord((self.x, self.y))[0] + self.image.get_bounding_rect().width > 700 and self.direction == 90:
+            self.direction = 270
 
-        if to_real_coord((self.x, self.y), self.centre_x, self.centre_y)[0] <= 0 and self.direction == 180:
+        if self.to_real_coord((self.x, self.y))[0] <= 0 and self.direction == 270:
             self.direction = 90
 
         greenlet.getcurrent().parent.switch()
 
+    def turn_degrees(self, deg):
+        self.direction = (self.direction + deg) % 360
 
-def to_real_coord(coords, offx, offy):
-    (x, y) = coords
-    cx = int(700/2)
-    cy = int(500/2)
+    def point_in_direction(self, deg):
+        self.direction = deg % 360
 
-    return cx + x - offx, cy - y - offy
+
+    def to_real_coord(self, coords):
+        offx = int(self.image.get_bounding_rect().width/2)
+        offy = int(self.image.get_bounding_rect().height/2)
+
+        (x, y) = coords
+        cx = int(700/2)
+        cy = int(500/2)
+
+        return cx + x - offx, cy - y - offy
+
+    def to_real_coord_img(self, image, coords):
+        offx = int(image.get_rect().width/2)
+        offy = int(image.get_rect().height/2)
+
+        (x, y) = coords
+        cx = int(700/2)
+        cy = int(500/2)
+
+        return cx + x - offx, cy - y - offy
 
 
 def to_scratch_coord(coords):
@@ -112,6 +129,8 @@ def click_green_flag():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.KEYDOWN:
+                    if event.key == 114:
+                        sprite.trigger_event("when_r_key_pressed")
                     if event.key == 32:
                         sprite.trigger_event("when_space_key_pressed")
                     if event.key == 275:
@@ -131,7 +150,10 @@ def click_green_flag():
             screen.fill(WHITE)
 
             for sprite in sprite_list:
-                screen.blit(sprite.image, to_real_coord([sprite.x, sprite.y], sprite.centre_x, sprite.centre_y))
+
+                transformed = pygame.transform.rotate(sprite.image, sprite.direction - 90)
+
+                screen.blit(transformed, sprite.to_real_coord_img(transformed, (sprite.x, sprite.y)))
 
             pygame.display.flip()
             clock.tick(60)
