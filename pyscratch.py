@@ -70,9 +70,23 @@ class Sprite:
 
     def turn_degrees(self, deg):
         self.direction = (self.direction + deg) % 360
+        greenlet.getcurrent().parent.switch()
+
+    def turn_clockwise(self, deg):
+        self.turn_degrees(deg)
+
+    def turn_anti_clockwise(self, deg):
+            self.turn_degrees(-deg)
 
     def point_in_direction(self, deg):
         self.direction = deg % 360
+        greenlet.getcurrent().parent.switch()
+
+    def go_to_mouse_pointer(self):
+        pos = read_mouse()
+        self.x = pos[0]
+        self.y = pos[1]
+        greenlet.getcurrent().parent.switch()
 
 
     def to_real_coord(self, coords):
@@ -101,7 +115,7 @@ def to_scratch_coord(coords):
     cx = int(700/2)
     cy = int(500/2)
 
-    return x - cx, y - cy
+    return x - cx, cy - y
 
 
 def read_mouse():
@@ -131,6 +145,9 @@ def click_green_flag():
 
     pygame.key.set_repeat(1, 5)
     clock = pygame.time.Clock()
+
+    for sprite in sprite_list:
+        sprite.trigger_event("when_green_flag_clicked")
 
     done = False
     while not done:
