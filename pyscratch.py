@@ -82,6 +82,27 @@ class Sprite:
         self.direction = deg % 360
         greenlet.getcurrent().parent.switch()
 
+    def point_towards_mouse_pointer(self):
+        (mx, my) = read_mouse()
+
+        dx = mx - self.x
+        dy = my - self.y
+
+        if dy == 0:
+            self.direction = 90
+        else:
+            self.direction = (int(math.degrees(math.atan(dx/dy))))
+
+        if dy < 0:
+            self.direction = 180 + self.direction
+
+
+        # self.x = (math.cos(math.radians(scratch_dir_to_degrees(self.direction))) * steps) + self.x
+        # self.y = (math.sin(math.radians(scratch_dir_to_degrees(self.direction))) * steps) + self.y
+
+
+        greenlet.getcurrent().parent.switch()
+
     def go_to_mouse_pointer(self):
         pos = read_mouse()
         self.x = pos[0]
