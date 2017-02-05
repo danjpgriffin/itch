@@ -1,7 +1,8 @@
 import math
 import pygame
-from sched import schedule, task
+from sched import schedule, Task
 from utils import scratch_dir_to_degrees, read_mouse, to_real_coord
+
 
 class Sprite:
     def __init__(self, filename, x, y):
@@ -10,19 +11,14 @@ class Sprite:
         self.direction = 90
         self.image = pygame.image.load(filename)
         self.event_handlers = {}
-        self.event_greenlets = {}
+        self.event_tasks = {}
 
     def queue_event(self, event_name):
 
-        if event_name in self.event_greenlets:
-            return
+        if event_name not in self.event_tasks:
+            self.event_tasks[event_name] = Task(self.event_handlers[event_name], self)
 
-        def event_handler():
-            self.event_handlers[event_name](self)
-            del self.event_greenlets[event_name]
-
-        g = task(event_handler)
-        self.event_greenlets[event_name] = g
+        self.event_tasks[event_name].invoke()
 
     def trigger_event(self, event_name):
         if event_name in self.event_handlers:

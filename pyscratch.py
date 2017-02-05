@@ -57,8 +57,8 @@ def click_green_flag():
                         sprite.trigger_event("when_down_arrow_key_pressed")
 
         for sprite in sprite_list:
-            for g in [v for v in sprite.event_greenlets.values()]:
-                g.switch()
+            for task in [val for val in sprite.event_tasks.values()]:
+                task.run_until_reschedule()
 
         if not done:
             screen.fill(WHITE)
