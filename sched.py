@@ -1,8 +1,15 @@
 from greenlet import greenlet
+import pygame
 
 
 def schedule():
     greenlet.getcurrent().parent.switch()
+
+
+def wait(millis):
+    target = pygame.time.get_ticks() + millis
+    while target > pygame.time.get_ticks():
+        schedule()
 
 
 class Task:
@@ -10,6 +17,7 @@ class Task:
     def __init__(self, func, receiver):
         self.func = func
         self.greenlet = greenlet(self.event_handler)
+        self.greenlet.itch_task = self
         self.running = False
         self.receiver = receiver
 

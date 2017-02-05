@@ -1,6 +1,6 @@
 import math
 import pygame
-from sched import schedule, Task
+from sched import schedule, wait, Task
 from utils import scratch_dir_to_degrees, read_mouse, to_real_coord
 
 
@@ -90,3 +90,7 @@ class Sprite:
         self.x = pos[0]
         self.y = pos[1]
         schedule()
+
+    def wait_secs(self, secs):
+        wait(secs*1000)
+

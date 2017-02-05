@@ -10,6 +10,14 @@ def when_m_key_pressed(sprite):
 
 
 @script(cat)
+def when_w_key_pressed(sprite):
+    for x in range(0, 10):
+        print(x)
+        sprite.wait_secs(1)
+        sprite.move_steps(10)
+
+
+@script(cat)
 def when_x_key_pressed(sprite):
     sprite.go_to_mouse_pointer()
 
