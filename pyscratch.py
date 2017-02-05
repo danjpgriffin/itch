@@ -67,7 +67,7 @@ def click_green_flag():
 
                 transformed = pygame.transform.rotate(sprite.image, utils.scratch_dir_to_degrees(sprite.direction))
 
-                screen.blit(transformed, sprite.to_real_coord_img(transformed, (sprite.x, sprite.y)))
+                screen.blit(transformed, utils.to_real_coord(transformed, (sprite.x, sprite.y)))
 
             pygame.display.flip()
             clock.tick(60)
