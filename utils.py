@@ -24,6 +24,13 @@ def to_real_coord(image, coords):
 
         return cx + x - offx, cy - y - offy
 
+def to_real_coord2(coords):
+
+    (x, y) = coords
+    cx = int(700/2)
+    cy = int(500/2)
+
+    return cx + x, cy - y
 
 def to_scratch_coord(coords):
     (x, y) = coords
@@ -35,3 +42,4 @@ def to_scratch_coord(coords):
 
 def read_mouse():
     return to_scratch_coord(pygame.mouse.get_pos())
+

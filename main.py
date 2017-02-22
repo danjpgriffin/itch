@@ -12,7 +12,6 @@ def when_m_key_pressed(sprite):
 @on(cat)
 def when_w_key_pressed(sprite):
     for x in range(0, 10):
-        print(x)
         sprite.wait_secs(1)
         sprite.move_steps(10)
 
@@ -83,6 +82,11 @@ def when_green_flag_clicked(sprite):
     while True:
         sprite.move_steps(10)
         sprite.if_on_edge_bounce()
+
+
+@on(cat, fish)
+def when_this_sprite_clicked(sprite):
+    sprite.change_x_by(50)
 
 # @on(cat)
 # def when_green_flag_clicked(sprite):

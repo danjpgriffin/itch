@@ -41,8 +41,11 @@ def click_green_flag():
             for sprite in sprite_list:
                 if event.type == pygame.QUIT:
                     done = True
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if sprite.hit_test(utils.read_mouse()):
+                        sprite.trigger_event("when_this_sprite_clicked")
+
                 if event.type == pygame.KEYDOWN:
-                    #print(event.key)
                     if 97 <= event.key <= 122:
                         sprite.trigger_event("when_" + chr(event.key) + "_key_pressed")
                     if event.key == 32:
@@ -64,10 +67,8 @@ def click_green_flag():
             screen.fill(WHITE)
 
             for sprite in sprite_list:
+                sprite.render_in(screen)
 
-                transformed = pygame.transform.rotate(sprite.image, utils.scratch_dir_to_degrees(sprite.direction))
-
-                screen.blit(transformed, utils.to_real_coord(transformed, (sprite.x, sprite.y)))
 
             pygame.display.flip()
             clock.tick(60)

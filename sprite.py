@@ -1,7 +1,7 @@
 import math
 import pygame
 from sched import schedule, wait, Task
-from utils import scratch_dir_to_degrees, read_mouse, to_real_coord
+from utils import scratch_dir_to_degrees, read_mouse, to_real_coord, to_real_coord2
 
 
 class Sprite:
@@ -10,6 +10,7 @@ class Sprite:
         self.y = y
         self.direction = 90
         self.image = pygame.image.load(filename)
+        self.mask = pygame.mask.from_surface(self.image)
         self.event_handlers = {}
         self.event_tasks = {}
 
@@ -118,3 +119,16 @@ class Sprite:
     def wait_secs(self, secs):
         wait(secs*1000)
 
+    def hit_test(self, coords):
+        transformed = pygame.transform.rotate(self.image, scratch_dir_to_degrees(self.direction))
+        r = transformed.get_bounding_rect().copy().move(to_real_coord(transformed, (self.x, self.y)))
+        (x, y) = to_real_coord2(coords)
+        print(x,  y)
+        return r.collidepoint(x, y) != 0
+
+    def render_in(self, screen):
+        transformed = pygame.transform.rotate(self.image, scratch_dir_to_degrees(self.direction))
+
+        # r = transformed.get_bounding_rect().copy().move(to_real_coord(transformed, (self.x, self.y)))
+        # pygame.draw.rect(screen, (0,0,0), r, 1)
+        screen.blit(transformed, to_real_coord(transformed, (self.x, self.y)))
