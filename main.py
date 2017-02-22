@@ -4,12 +4,12 @@ fish = new_sprite("fish.png", 150, 0)
 fish2 = new_sprite("fish.png", -150, -100)
 
 
-@script(cat)
+@on(cat)
 def when_m_key_pressed(sprite):
     sprite.move_steps(10)
 
 
-@script(cat)
+@on(cat)
 def when_w_key_pressed(sprite):
     for x in range(0, 10):
         print(x)
@@ -17,74 +17,74 @@ def when_w_key_pressed(sprite):
         sprite.move_steps(10)
 
 
-@script(cat)
+@on(cat)
 def when_m_key_pressed(sprite):
     sprite.go_to_mouse_pointer()
 
 
-@script(cat)
+@on(cat)
 def when_c_key_pressed(sprite):
     sprite.go_to_x_y(0, 0)
 
 
-@script(cat)
+@on(cat)
 def when_x_key_pressed(sprite):
     sprite.set_x_to(150)
 
 
-@script(cat)
+@on(cat)
 def when_y_key_pressed(sprite):
     sprite.set_y_to(0)
 
 
-@script(cat)
+@on(cat)
 def when_l_key_pressed(sprite):
     sprite.turn_anti_clockwise(10)
 
 
-@script(cat)
+@on(cat)
 def when_r_key_pressed(sprite):
     sprite.turn_clockwise(10)
 
 
-@script(cat)
+@on(cat)
 def when_left_arrow_key_pressed(sprite):
     sprite.point_in_direction(-90)
     sprite.change_x_by(-10)
 
 
-@script(cat)
+@on(cat)
 def when_right_arrow_key_pressed(sprite):
     sprite.point_in_direction(90)
     sprite.change_x_by(10)
 
 
-@script(cat)
+@on(cat)
 def when_up_arrow_key_pressed(sprite):
     sprite.point_in_direction(0)
     sprite.change_y_by(10)
 
 
-@script(cat)
+@on(cat)
 def when_down_arrow_key_pressed(sprite):
     sprite.point_in_direction(180)
     sprite.change_y_by(-10)
 
 
-@script(fish)
+@on(fish)
 def when_space_key_pressed(sprite):
     while True:
         sprite.move_steps(10)
         sprite.if_on_edge_bounce()
 
 
-@script(fish2)
+@on(fish2)
 def when_green_flag_clicked(sprite):
     while True:
         sprite.move_steps(10)
         sprite.if_on_edge_bounce()
 
-# @script(cat)
+# @on(cat)
 # def when_green_flag_clicked(sprite):
 #     while True:
 #         sprite.point_towards(fish)

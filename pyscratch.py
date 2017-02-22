@@ -11,7 +11,7 @@ def new_sprite(filename, x=0, y=0):
     return sprite
 
 
-def script(*receivers):
+def on(*receivers):
     def decorator(function):
         for receiver in receivers:
             receiver.event_handlers[function.__name__] = function
