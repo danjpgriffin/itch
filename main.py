@@ -84,14 +84,15 @@ def when_green_flag_clicked(sprite):
         sprite.if_on_edge_bounce()
 
 
-@on(cat, fish)
+@on(cat)
 def when_this_sprite_clicked(sprite):
     sprite.change_x_by(50)
 
-# @on(cat)
-# def when_green_flag_clicked(sprite):
-#     while True:
-#         sprite.point_towards(fish)
-#         sprite.move_steps(2)
+
+@on(fish)
+def when_this_sprite_clicked(sprite):
+    while True:
+        sprite.point_towards(cat)
+        sprite.move_steps(2)
 
 click_green_flag()
