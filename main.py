@@ -77,7 +77,7 @@ def when_green_flag_clicked(sprite):
 # @script(cat)
 # def when_green_flag_clicked(sprite):
 #     while True:
-#         sprite.point_towards_mouse_pointer()
-#         sprite.move_steps(10)
+#         sprite.point_towards(fish)
+#         sprite.move_steps(2)
 
 click_green_flag()

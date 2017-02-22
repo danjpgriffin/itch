@@ -85,6 +85,22 @@ class Sprite:
 
         schedule()
 
+    def point_towards(self, other_sprite):
+        (mx, my) = (other_sprite.x, other_sprite.y)
+
+        dx = mx - self.x
+        dy = my - self.y
+
+        if dy == 0:
+            self.direction = 90
+        else:
+            self.direction = (int(math.degrees(math.atan(dx/dy))))
+
+        if dy < 0:
+            self.direction = 180 + self.direction
+
+        schedule()
+
     def go_to_mouse_pointer(self):
         pos = read_mouse()
         self.x = pos[0]
