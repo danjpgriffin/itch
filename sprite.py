@@ -69,6 +69,14 @@ class Sprite:
         self.y = y
         schedule()
 
+    def set_x_to(self, x):
+        self.x = x
+        schedule()
+
+    def set_y_to(self, y):
+        self.y = y
+        schedule()
+
     def point_towards_mouse_pointer(self):
         (mx, my) = read_mouse()
 

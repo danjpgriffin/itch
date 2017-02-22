@@ -18,13 +18,23 @@ def when_w_key_pressed(sprite):
 
 
 @script(cat)
-def when_x_key_pressed(sprite):
+def when_m_key_pressed(sprite):
     sprite.go_to_mouse_pointer()
 
 
 @script(cat)
 def when_c_key_pressed(sprite):
     sprite.go_to_x_y(0, 0)
+
+
+@script(cat)
+def when_x_key_pressed(sprite):
+    sprite.set_x_to(150)
+
+
+@script(cat)
+def when_y_key_pressed(sprite):
+    sprite.set_y_to(0)
 
 
 @script(cat)
