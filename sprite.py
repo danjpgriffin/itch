@@ -10,7 +10,6 @@ class Sprite:
         self.y = y
         self.direction = 90
         self.image = pygame.image.load(filename)
-        self.mask = pygame.mask.from_surface(self.image)
         self.event_handlers = {}
         self.event_tasks = {}
 
@@ -118,17 +117,29 @@ class Sprite:
 
     def wait_secs(self, secs):
         wait(secs*1000)
+        schedule()
 
     def hit_test(self, coords):
         transformed = pygame.transform.rotate(self.image, scratch_dir_to_degrees(self.direction))
-        r = transformed.get_bounding_rect().copy().move(to_real_coord(transformed, (self.x, self.y)))
+        r = transformed.get_rect().copy().move(to_real_coord(transformed, (self.x, self.y)))
         (x, y) = to_real_coord2(coords)
-        print(x,  y)
-        return r.collidepoint(x, y) != 0
+        if r.collidepoint(x, y) != 0:
+            mask = pygame.mask.from_surface(transformed)
+            return mask.get_at((x - r.x, y - r.y))
+        else:
+            return False
+
 
     def render_in(self, screen):
         transformed = pygame.transform.rotate(self.image, scratch_dir_to_degrees(self.direction))
-
-        # r = transformed.get_bounding_rect().copy().move(to_real_coord(transformed, (self.x, self.y)))
+        # r = transformed.get_rect().copy().move(to_real_coord(transformed, (self.x, self.y)))
+        # mask = pygame.mask.from_surface(transformed)
         # pygame.draw.rect(screen, (0,0,0), r, 1)
+        # (x, y) = to_real_coord2(read_mouse())
+        #
+        #
+        # olist = mask.outline()
+        # pygame.draw.polygon(screen,(200,150,150),olist,0)
+        # pygame.draw.line(screen, (0,0,0), (x - r.x, y - r.y), (x - r.x, y - r.y), 2)
+
         screen.blit(transformed, to_real_coord(transformed, (self.x, self.y)))
