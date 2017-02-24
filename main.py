@@ -85,6 +85,14 @@ def when_green_flag_clicked(sprite):
 
 
 @on(cat)
+def when_green_flag_clicked(sprite):
+    while True:
+        if sprite.touching_mouse_pointer():
+            sprite.move_steps(10)
+            sprite.if_on_edge_bounce()
+
+
+@on(cat)
 def when_this_sprite_clicked(sprite):
     sprite.change_x_by(50)
 

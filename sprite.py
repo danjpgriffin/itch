@@ -93,6 +93,11 @@ class Sprite:
 
         schedule()
 
+    def touching_mouse_pointer(self):
+        answer = self.hit_test(read_mouse())
+        schedule()
+        return answer
+
     def point_towards(self, other_sprite):
         (mx, my) = (other_sprite.x, other_sprite.y)
 
