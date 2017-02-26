@@ -1,6 +1,7 @@
 import pygame
 from sprite import Sprite
 import utils
+from sched import wait_secs
 
 sprite_list = []
 
@@ -68,7 +69,6 @@ def click_green_flag():
 
             for sprite in sprite_list:
                 sprite.render_in(screen)
-
 
             pygame.display.flip()
             clock.tick(60)

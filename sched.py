@@ -12,6 +12,11 @@ def wait(millis):
         schedule()
 
 
+def wait_secs(secs):
+    wait(secs*1000)
+    schedule()
+
+
 class Task:
 
     def __init__(self, func, receiver):
@@ -34,4 +39,3 @@ class Task:
 
             self.running = False
             schedule()
-

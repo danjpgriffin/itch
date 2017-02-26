@@ -12,7 +12,7 @@ def when_m_key_pressed(sprite):
 @on(cat)
 def when_w_key_pressed(sprite):
     for x in range(0, 10):
-        sprite.wait_secs(1)
+        wait_secs(1)
         sprite.move_steps(10)
 
 
