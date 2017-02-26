@@ -10,27 +10,27 @@ class Sprite:
 
         def __set__(self, obj, val):
             setattr(obj, "_priv_direction", val)
-            obj._transformed_image = pygame.transform.rotate(obj.image, scratch_dir_to_degrees(val))
+            obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
             obj._mask = pygame.mask.from_surface(obj._transformed_image)
 
         def __get__(self, obj, objtype):
             return getattr(obj, "_priv_direction")
 
-    direction = _DirectionDescriptor()
+    _direction = _DirectionDescriptor()
 
     def __init__(self, filename, x, y):
-        self.x = x
-        self.y = y
-        self.image = pygame.image.load(filename)
-        self.direction = 90
-        self.event_handlers = {}
-        self.event_tasks = {}
+        self._x = x
+        self._y = y
+        self._image = pygame.image.load(filename)
+        self._direction = 90
+        self._event_handlers = {}
+        self._event_tasks = {}
 
     # Motion methods
 
     def move_steps(self, steps):
-        self.x += self._cos_dir() * steps
-        self.y += (self._sin_dir() * steps)
+        self._x += self._cos_dir() * steps
+        self._y += (self._sin_dir() * steps)
         schedule()
 
     def turn_clockwise(self, deg):
@@ -42,61 +42,61 @@ class Sprite:
         schedule()
 
     def point_in_direction(self, deg):
-        self.direction = deg % 360
+        self._direction = deg % 360
         schedule()
 
     def point_towards_mouse_pointer(self):
         self._point_towards(read_mouse())
 
     def point_towards(self, other_sprite):
-        self._point_towards((other_sprite.x, other_sprite.y))
+        self._point_towards((other_sprite.x_position(), other_sprite.y_position()))
 
     def go_to_x_y(self, x, y):
-        self.x = x
-        self.y = y
+        self._x = x
+        self._y = y
         schedule()
 
     def go_to_mouse_pointer(self):
         pos = read_mouse()
-        self.x = pos[0]
-        self.y = pos[1]
+        self._x = pos[0]
+        self._y = pos[1]
         schedule()
 
     # Missing Glide
 
     def change_x_by(self, amount):
-        self.x = self.x + amount
+        self._x = self._x + amount
         schedule()
 
     def set_x_to(self, x):
-        self.x = x
+        self._x = x
         schedule()
 
     def change_y_by(self, amount):
-        self.y = self.y + amount
+        self._y = self._y + amount
         schedule()
 
     def set_y_to(self, y):
-        self.y = y
+        self._y = y
         schedule()
 
     # Better implementation required
     def if_on_edge_bounce(self):
-        if self._real_coords()[0] + self.image.get_bounding_rect().width > 700 and self.direction == 90:
-            self.direction = 270
+        if self._real_coords()[0] + self._image.get_bounding_rect().width > 700 and self._direction == 90:
+            self._direction = 270
 
-        if self._real_coords()[0] <= 0 and self.direction == 270:
-            self.direction = 90
+        if self._real_coords()[0] <= 0 and self._direction == 270:
+            self._direction = 90
 
         schedule()
 
     # Set rotation style required
 
     def x_position(self):
-        return self.x
+        return self._x
 
     def y_position(self):
-        return self.y
+        return self._y
 
     # Expose direction cleanly
 
@@ -112,9 +112,16 @@ class Sprite:
     def render_in(self, screen):
         screen.blit(self._transformed_image, self._real_coords())
 
+    def register(self, function):
+        self._event_handlers[function.__name__] = function
+
     def trigger_event(self, event_name):
-        if event_name in self.event_handlers:
+        if event_name in self._event_handlers:
             self._queue_event(event_name)
+
+    def run_tasks_until_reschedule(self):
+        for task in [val for val in self._event_tasks.values()]:
+            task.run_until_reschedule()
 
     def hit_test(self, coords):
         r = self._bounding_box()
@@ -127,33 +134,33 @@ class Sprite:
     # Internal methods
 
     def _sin_dir(self):
-        return math.sin(math.radians(scratch_dir_to_degrees(self.direction)))
+        return math.sin(math.radians(scratch_dir_to_degrees(self._direction)))
 
     def _cos_dir(self):
-        return math.cos(math.radians(scratch_dir_to_degrees(self.direction)))
+        return math.cos(math.radians(scratch_dir_to_degrees(self._direction)))
 
     def _turn_degrees(self, deg):
-        self.direction = (self.direction + deg) % 360
+        self._direction = (self._direction + deg) % 360
         schedule()
 
     def _queue_event(self, event_name):
 
-        if event_name not in self.event_tasks:
-            self.event_tasks[event_name] = Task(self.event_handlers[event_name], self)
+        if event_name not in self._event_tasks:
+            self._event_tasks[event_name] = Task(self._event_handlers[event_name], self)
 
-        self.event_tasks[event_name].invoke()
+        self._event_tasks[event_name].invoke()
 
     def _point_towards(self, coords):
-        dx = coords[0] - self.x
-        dy = coords[1] - self.y
+        dx = coords[0] - self._x
+        dy = coords[1] - self._y
 
         if dy == 0:
-            self.direction = 90
+            self._direction = 90
         else:
-            self.direction = (int(math.degrees(math.atan(dx/dy))))
+            self._direction = (int(math.degrees(math.atan(dx/dy))))
 
         if dy < 0:
-            self.direction += 180
+            self._direction += 180
 
         schedule()
 
@@ -164,6 +171,6 @@ class Sprite:
         offx = int(self._transformed_image.get_rect().width/2)
         offy = int(self._transformed_image.get_rect().height/2)
 
-        real = to_real_coord((self.x, self.y))
+        real = to_real_coord((self._x, self._y))
 
         return real[0] - offx, real[1] - offy

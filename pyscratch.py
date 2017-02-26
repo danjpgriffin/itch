@@ -15,7 +15,7 @@ def new_sprite(filename, x=0, y=0):
 def on(*receivers):
     def decorator(function):
         for receiver in receivers:
-            receiver.event_handlers[function.__name__] = function
+            receiver.register(function)
 
     return decorator
 
@@ -61,8 +61,7 @@ def click_green_flag():
                         sprite.trigger_event("when_down_arrow_key_pressed")
 
         for sprite in sprite_list:
-            for task in [val for val in sprite.event_tasks.values()]:
-                task.run_until_reschedule()
+            sprite.run_tasks_until_reschedule()
 
         if not done:
             screen.fill(WHITE)
