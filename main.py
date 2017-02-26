@@ -3,6 +3,7 @@ cat = new_sprite("cat.png", -150, 100)
 fish = new_sprite("fish.png", 150, 0)
 fish2 = new_sprite("fish.png", -150, -100)
 
+cat.set_rotation_style(Rotate.left_right)
 
 @on(cat)
 def when_m_key_pressed(sprite):

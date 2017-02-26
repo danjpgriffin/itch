@@ -1,8 +1,8 @@
 import math
 import pygame
+import pyscratch
 from sched import schedule, Task
-from utils import scratch_dir_to_degrees, read_mouse, to_real_coord
-
+from utils import scratch_dir_to_degrees, read_mouse, to_real_coord, Rotate
 
 class Sprite:
 
@@ -10,7 +10,14 @@ class Sprite:
 
         def __set__(self, obj, val):
             setattr(obj, "_priv_direction", val)
-            obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
+            print(val)
+            if obj._rotation_style == Rotate.all_around:
+                obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
+            elif obj._rotation_style == Rotate.left_right and val < 0:
+                obj._transformed_image = pygame.transform.flip(obj._image, True, False)
+            else:
+                obj._transformed_image = obj._image
+
             obj._mask = pygame.mask.from_surface(obj._transformed_image)
 
         def __get__(self, obj, objtype):
@@ -21,10 +28,11 @@ class Sprite:
     def __init__(self, filename, x, y):
         self._x = x
         self._y = y
-        self._image = pygame.image.load(filename)
-        self._direction = 90
         self._event_handlers = {}
         self._event_tasks = {}
+        self._rotation_style = pyscratch.Rotate.all_around
+        self._image = pygame.image.load(filename)
+        self._direction = 90
 
     # Motion methods
 
@@ -83,14 +91,16 @@ class Sprite:
     # Better implementation required
     def if_on_edge_bounce(self):
         if self._real_coords()[0] + self._image.get_bounding_rect().width > 700 and self._direction == 90:
-            self._direction = 270
+            self._direction = -90
 
-        if self._real_coords()[0] <= 0 and self._direction == 270:
+        if self._real_coords()[0] <= 0 and self._direction == -90:
             self._direction = 90
 
         schedule()
 
     # Set rotation style required
+    def set_rotation_style(self, style):
+        self._rotation_style = style
 
     def x_position(self):
         return self._x
