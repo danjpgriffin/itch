@@ -11,12 +11,12 @@ class Sprite:
 
         def __set__(self, obj, val):
             setattr(obj, "_priv_direction", val)
-            if obj._rotation_style == Rotate.all_around:
-                obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
-            elif obj._rotation_style == Rotate.left_right and val < 0:
-                obj._transformed_image = pygame.transform.flip(obj._image, True, False)
-            else:
-                obj._transformed_image = obj._image
+            #if obj._rotation_style == Rotate.all_around:
+            obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
+            #elif obj._rotation_style == Rotate.left_right and val < 0:
+            #    obj._transformed_image = pygame.transform.flip(obj._image, True, False)
+            #else:
+            #    obj._transformed_image = obj._image
 
             obj._mask = pygame.mask.from_surface(obj._transformed_image)
 
