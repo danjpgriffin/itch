@@ -4,8 +4,6 @@ import pygame
 from itch import pyscratch
 from itch.utils import scratch_dir_to_degrees, read_mouse, to_real_coord, Rotate
 
-from itch.sched import schedule, Task
-
 
 class Sprite:
 
@@ -13,7 +11,6 @@ class Sprite:
 
         def __set__(self, obj, val):
             setattr(obj, "_priv_direction", val)
-            print(val)
             if obj._rotation_style == Rotate.all_around:
                 obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
             elif obj._rotation_style == Rotate.left_right and val < 0:
@@ -28,7 +25,7 @@ class Sprite:
 
     _direction = _DirectionDescriptor()
 
-    def __init__(self, filename, x, y):
+    def __init__(self, filename, x, y, scheduler):
         self._x = x
         self._y = y
         self._event_handlers = {}
@@ -36,25 +33,26 @@ class Sprite:
         self._rotation_style = pyscratch.Rotate.all_around
         self._image = pygame.image.load(filename)
         self._direction = 90
+        self._scheduler = scheduler
 
     # Motion methods
 
     def move_steps(self, steps):
         self._x += self._cos_dir() * steps
         self._y += (self._sin_dir() * steps)
-        schedule()
+        self._scheduler.schedule()
 
     def turn_clockwise(self, deg):
         self._turn_degrees(deg)
-        schedule()
+        self._scheduler.schedule()
 
     def turn_anti_clockwise(self, deg):
         self._turn_degrees(-deg)
-        schedule()
+        self._scheduler.schedule()
 
     def point_in_direction(self, deg):
         self._direction = deg % 360
-        schedule()
+        self._scheduler.schedule()
 
     def point_towards_mouse_pointer(self):
         self._point_towards(read_mouse())
@@ -65,31 +63,31 @@ class Sprite:
     def go_to_x_y(self, x, y):
         self._x = x
         self._y = y
-        schedule()
+        self._scheduler.schedule()
 
     def go_to_mouse_pointer(self):
         pos = read_mouse()
         self._x = pos[0]
         self._y = pos[1]
-        schedule()
+        self._scheduler.schedule()
 
     # Missing Glide
 
     def change_x_by(self, amount):
         self._x = self._x + amount
-        schedule()
+        self._scheduler.schedule()
 
     def set_x_to(self, x):
         self._x = x
-        schedule()
+        self._scheduler.schedule()
 
     def change_y_by(self, amount):
         self._y = self._y + amount
-        schedule()
+        self._scheduler.schedule()
 
     def set_y_to(self, y):
         self._y = y
-        schedule()
+        self._scheduler.schedule()
 
     # Better implementation required
     def if_on_edge_bounce(self):
@@ -99,7 +97,7 @@ class Sprite:
         if self._real_coords()[0] <= 0 and self._direction == -90:
             self._direction = 90
 
-        schedule()
+        self._scheduler.schedule()
 
     # Set rotation style required
     def set_rotation_style(self, style):
@@ -111,13 +109,14 @@ class Sprite:
     def y_position(self):
         return self._y
 
-    # Expose direction cleanly
+    def direction(self):
+        return self._direction
 
     # Sensing methods
 
     def touching_mouse_pointer(self):
         answer = self.hit_test(read_mouse())
-        schedule()
+        self._scheduler.schedule()
         return answer
 
     # Non-scratch mapped public methods
@@ -154,12 +153,12 @@ class Sprite:
 
     def _turn_degrees(self, deg):
         self._direction = (self._direction + deg) % 360
-        schedule()
+        self._scheduler.schedule()
 
     def _queue_event(self, event_name):
 
         if event_name not in self._event_tasks:
-            self._event_tasks[event_name] = Task(self._event_handlers[event_name], self)
+            self._event_tasks[event_name] = self._scheduler.task(self._event_handlers[event_name], self)
 
         self._event_tasks[event_name].invoke()
 
@@ -175,7 +174,7 @@ class Sprite:
         if dy < 0:
             self._direction += 180
 
-        schedule()
+        self._scheduler.schedule()
 
     def _bounding_box(self):
         return self._transformed_image.get_rect().copy().move(self._real_coords())

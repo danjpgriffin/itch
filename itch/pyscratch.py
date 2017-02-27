@@ -1,13 +1,15 @@
 import pygame
 from itch.utils import read_mouse, Rotate
-from itch.sched import wait_secs
+from itch.sched import Scheduler
 from itch.sprite import Sprite
+
+default_scheduler = Scheduler()
 
 sprite_list = []
 
 
-def new_sprite(filename, x=0, y=0):
-    sprite = Sprite(filename, x, y)
+def new_sprite(filename, x=0, y=0, scheduler=default_scheduler):
+    sprite = Sprite(filename, x, y, scheduler)
     sprite_list.append(sprite)
     return sprite
 
@@ -19,6 +21,10 @@ def on(*receivers):
 
     return decorator
 
+
+def wait_secs(secs):
+    default_scheduler.wait(secs*1000)
+    default_scheduler.schedule()
 
 WHITE = (255, 255, 255)
 

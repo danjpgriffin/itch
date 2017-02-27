@@ -2,29 +2,29 @@ from greenlet import greenlet
 import pygame
 
 
-def schedule():
-    greenlet.getcurrent().parent.switch()
+class Scheduler:
 
+    def schedule(self):
+        greenlet.getcurrent().parent.switch()
 
-def wait(millis):
-    target = pygame.time.get_ticks() + millis
-    while target > pygame.time.get_ticks():
-        schedule()
+    def wait(self, millis):
+        target = pygame.time.get_ticks() + millis
+        while target > pygame.time.get_ticks():
+            self.schedule()
 
-
-def wait_secs(secs):
-    wait(secs*1000)
-    schedule()
+    def task(self, func, receiver):
+        return Task(func, receiver, self)
 
 
 class Task:
 
-    def __init__(self, func, receiver):
+    def __init__(self, func, receiver, scheduler):
         self.func = func
         self.greenlet = greenlet(self.event_handler)
         self.greenlet.itch_task = self
         self.running = False
         self.receiver = receiver
+        self._scheduler = scheduler
 
     def invoke(self):
         self.running = True
@@ -38,4 +38,4 @@ class Task:
                 self.func(self.receiver)
 
             self.running = False
-            schedule()
+            self._scheduler.schedule()
