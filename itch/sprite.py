@@ -1,8 +1,11 @@
 import math
+
 import pygame
-import pyscratch
-from sched import schedule, Task
-from utils import scratch_dir_to_degrees, read_mouse, to_real_coord, Rotate
+from itch import pyscratch
+from itch.utils import scratch_dir_to_degrees, read_mouse, to_real_coord, Rotate
+
+from itch.sched import schedule, Task
+
 
 class Sprite:
 

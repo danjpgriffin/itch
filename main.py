@@ -1,7 +1,7 @@
-from pyscratch import *
-cat = new_sprite("cat.png", -150, 100)
-fish = new_sprite("fish.png", 150, 0)
-fish2 = new_sprite("fish.png", -150, -100)
+from itch.pyscratch import *
+cat = new_sprite("resources/cat.png", -150, 100)
+fish = new_sprite("resources/fish.png", 150, 0)
+fish2 = new_sprite("resources/fish.png", -150, -100)
 
 cat.set_rotation_style(Rotate.left_right)
 

@@ -1,8 +1,6 @@
 import pygame
-from sprite import Sprite
-import utils
-from sched import wait_secs
-from utils import Rotate
+from itch.utils import read_mouse, Rotate
+from itch.sprite import Sprite
 
 sprite_list = []
 
@@ -44,7 +42,7 @@ def click_green_flag():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if sprite.hit_test(utils.read_mouse()):
+                    if sprite.hit_test(read_mouse()):
                         sprite.trigger_event("when_this_sprite_clicked")
 
                 if event.type == pygame.KEYDOWN:
