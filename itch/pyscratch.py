@@ -1,5 +1,6 @@
 import pygame
 from itch.utils import read_mouse, Rotate
+from itch.sched import wait_secs
 from itch.sprite import Sprite
 
 sprite_list = []
