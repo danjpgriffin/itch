@@ -4,12 +4,22 @@ fish = new_sprite("resources/fish.png", 150, 0)
 fish2 = new_sprite("resources/fish.png", -150, -100)
 
 cat.set_rotation_style(Rotate.left_right)
+fish2.set_rotation_style(Rotate.left_right)
 
 
 @on(cat)
 def when_m_key_pressed(sprite):
     sprite.move_steps(10)
 
+
+@on(cat)
+def when_k_key_pressed(sprite):
+    sprite.set_rotation_style(Rotate.all_around)
+
+
+@on(cat)
+def when_j_key_pressed(sprite):
+    sprite.set_rotation_style(Rotate.left_right)
 
 @on(cat)
 def when_w_key_pressed(sprite):

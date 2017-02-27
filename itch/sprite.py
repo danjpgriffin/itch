@@ -10,13 +10,18 @@ class Sprite:
     class _DirectionDescriptor:
 
         def __set__(self, obj, val):
+            if val < -179:
+                val = val % 360 - 180
+            elif val > 180:
+                val = val % 360 - 360
+
             setattr(obj, "_priv_direction", val)
-            #if obj._rotation_style == Rotate.all_around:
-            obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
-            #elif obj._rotation_style == Rotate.left_right and val < 0:
-            #    obj._transformed_image = pygame.transform.flip(obj._image, True, False)
-            #else:
-            #    obj._transformed_image = obj._image
+            if obj._rotation_style == Rotate.all_around:
+                obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
+            elif obj._rotation_style == Rotate.left_right and val < 0:
+                obj._transformed_image = pygame.transform.flip(obj._image, True, False)
+            else:
+                obj._transformed_image = obj._image
 
             obj._mask = pygame.mask.from_surface(obj._transformed_image)
 
@@ -51,7 +56,7 @@ class Sprite:
         self._scheduler.schedule()
 
     def point_in_direction(self, deg):
-        self._direction = deg % 360
+        self._direction = deg
         self._scheduler.schedule()
 
     def point_towards_mouse_pointer(self):
@@ -152,7 +157,7 @@ class Sprite:
         return math.cos(math.radians(scratch_dir_to_degrees(self._direction)))
 
     def _turn_degrees(self, deg):
-        self._direction = (self._direction + deg) % 360
+        self._direction += deg
         self._scheduler.schedule()
 
     def _queue_event(self, event_name):
