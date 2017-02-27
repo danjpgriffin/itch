@@ -96,15 +96,23 @@ class Sprite:
 
     # Better implementation required
     def if_on_edge_bounce(self):
-        if self._real_coords()[0] + self._image.get_bounding_rect().width > 700 and self._direction == 90:
-            self._direction = -90
+        (rx, ry) = self._real_coords()
 
-        if self._real_coords()[0] <= 0 and self._direction == -90:
-            self._direction = 90
+        if rx + self._image.get_bounding_rect().width > pyscratch.STAGE_WIDTH:
+            self._direction += 180
+
+        if rx <= 0:
+            self._direction += 180
+
+        if ry + self._image.get_bounding_rect().height > pyscratch.STAGE_HEIGHT:
+            self._direction += 180
+
+        if ry <= 0:
+            self._direction += 180
+
 
         self._scheduler.schedule()
 
-    # Set rotation style required
     def set_rotation_style(self, style):
         self._rotation_style = style
 

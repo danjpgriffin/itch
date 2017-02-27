@@ -1,4 +1,6 @@
 import pygame
+import itch.pyscratch
+import itch.pyscratch
 from enum import Enum
 
 
@@ -23,16 +25,16 @@ def scratch_dir_to_degrees(sd):
 def to_real_coord(coords):
 
     (x, y) = coords
-    cx = int(700/2)
-    cy = int(500/2)
+    cx = int(itch.pyscratch.STAGE_WIDTH/2)
+    cy = int(itch.pyscratch.STAGE_HEIGHT/2)
 
     return cx + x, cy - y
 
 
 def to_scratch_coord(coords):
     (x, y) = coords
-    cx = int(700/2)
-    cy = int(500/2)
+    cx = int(itch.pyscratch.STAGE_WIDTH/2)
+    cy = int(itch.pyscratch.STAGE_HEIGHT/2)
 
     return x - cx, cy - y
 
