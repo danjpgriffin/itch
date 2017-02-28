@@ -3,9 +3,16 @@ cat = new_sprite("resources/cat.png", -150, 100)
 fish = new_sprite("resources/fish.png", 150, 0)
 fish2 = new_sprite("resources/fish.png", -150, -100)
 
+
 @on(cat)
-def when_o_key_pressed(sprite):
+def when_f_key_pressed(sprite):
     sprite.move_steps(10)
+    sprite.if_on_edge_bounce()
+
+
+@on(cat)
+def when_b_key_pressed(sprite):
+    sprite.move_steps(-10)
     sprite.if_on_edge_bounce()
 
 
