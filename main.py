@@ -4,8 +4,9 @@ fish = new_sprite("resources/fish.png", 150, 0)
 fish2 = new_sprite("resources/fish.png", -150, -100)
 
 @on(cat)
-def when_m_key_pressed(sprite):
+def when_o_key_pressed(sprite):
     sprite.move_steps(10)
+    sprite.if_on_edge_bounce()
 
 
 @on(cat)
@@ -16,6 +17,7 @@ def when_k_key_pressed(sprite):
 @on(cat)
 def when_j_key_pressed(sprite):
     sprite.set_rotation_style(Rotate.left_right)
+
 
 @on(cat)
 def when_w_key_pressed(sprite):
@@ -95,10 +97,10 @@ def when_green_flag_clicked(sprite):
 @on(cat)
 def when_green_flag_clicked(sprite):
 
-    cat.set_rotation_style(Rotate.left_right)
+    # cat.set_rotation_style(Rotate.left_right)
     fish2.set_rotation_style(Rotate.left_right)
 
-    # fish2.point_in_direction(10)
+    fish2.point_in_direction(20)
 
     while True:
         if sprite.touching_mouse_pointer():
