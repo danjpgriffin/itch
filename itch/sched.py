@@ -4,6 +4,9 @@ import pygame
 
 class Scheduler:
 
+    def __init__(self):
+        self._clock = pygame.time.Clock()
+
     def schedule(self):
         greenlet.getcurrent().parent.switch()
 
@@ -14,6 +17,12 @@ class Scheduler:
 
     def task(self, func, receiver):
         return Task(func, receiver, self)
+
+    def sync_clock(self):
+        self._clock.tick(60)
+
+    def fps(self):
+        return int(self._clock.get_fps())
 
 
 class Task:

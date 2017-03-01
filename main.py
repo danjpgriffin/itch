@@ -1,7 +1,13 @@
 from itch.pyscratch import *
 cat = new_sprite("resources/cat.png", -150, 100)
+cat2 = new_sprite("resources/cat2.png", -250, 100)
 fish = new_sprite("resources/fish.png", 150, 0)
 fish2 = new_sprite("resources/fish.png", -150, -100)
+
+
+@on(cat2)
+def when_g_key_pressed(sprite):
+    sprite.glide_secs_to_x_y(1, mouse_x(), mouse_y())
 
 
 @on(cat)

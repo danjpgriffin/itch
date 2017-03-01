@@ -76,7 +76,15 @@ class Sprite:
         self._y = pos[1]
         self._scheduler.schedule()
 
-    # Missing Glide
+    def glide_secs_to_x_y(self, secs, x, y):
+        steps = self._scheduler.fps() * secs
+        ox = self._x
+        oy = self._y
+        dx = (x - ox) / steps
+        dy = (y - oy) / steps
+
+        for step in range(1, steps+1):
+            self.go_to_x_y(ox + dx * step, oy + dy * step)
 
     def change_x_by(self, amount):
         self._x = self._x + amount

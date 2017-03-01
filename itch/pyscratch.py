@@ -29,6 +29,15 @@ def wait_secs(secs):
     default_scheduler.wait(secs*1000)
     default_scheduler.schedule()
 
+
+def mouse_x():
+    return read_mouse()[0]
+
+
+def mouse_y():
+    return read_mouse()[1]
+
+
 WHITE = (255, 255, 255)
 
 
@@ -39,7 +48,6 @@ def click_green_flag():
     pygame.display.set_caption("Hello Itch")
 
     pygame.key.set_repeat(1, 5)
-    clock = pygame.time.Clock()
 
     for sprite in sprite_list:
         sprite.trigger_event("when_green_flag_clicked")
@@ -79,7 +87,7 @@ def click_green_flag():
                 sprite.render_in(screen)
 
             pygame.display.flip()
-            clock.tick(60)
+            default_scheduler.sync_clock()
         else:
             pygame.quit()
 
