@@ -88,6 +88,12 @@ def when_down_arrow_key_pressed(sprite):
 
 
 @on(fish)
+def when_y_key_pressed(sprite):
+        sprite.move_steps(10)
+        sprite.if_on_edge_bounce()
+
+
+@on(fish)
 def when_space_key_pressed(sprite):
     while True:
         sprite.move_steps(10)

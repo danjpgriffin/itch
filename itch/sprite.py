@@ -98,13 +98,13 @@ class Sprite:
     def if_on_edge_bounce(self):
         (rx, ry) = self._real_coords()
 
-        if rx + self._transformed_image.get_bounding_rect().width > pyscratch.STAGE_WIDTH:
+        if rx + self._transformed_image.get_rect().width > pyscratch.STAGE_WIDTH:
             self._direction = -self._direction
 
         if rx <= 0:
             self._direction = -self._direction
 
-        if ry + self._transformed_image.get_bounding_rect().height > pyscratch.STAGE_HEIGHT:
+        if ry + self._transformed_image.get_rect().height > pyscratch.STAGE_HEIGHT:
             self._direction = - self._direction + 180
 
         if ry <= 0:
@@ -135,6 +135,7 @@ class Sprite:
 
     def render_in(self, screen):
         screen.blit(self._transformed_image, self._real_coords())
+        # pygame.draw.rect(screen, (0,0,0), self._transformed_image.get_rect().move(self._real_coords()), 1)
 
     def register(self, function):
         self._event_handlers[function.__name__] = function
