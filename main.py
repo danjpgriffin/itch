@@ -4,6 +4,10 @@ cat2 = new_sprite("resources/cat2.png", -250, 100)
 fish = new_sprite("resources/fish.png", 150, 0)
 fish2 = new_sprite("resources/fish.png", -150, -100)
 
+# cat2 = new_sprite([
+#     ("cat-a", "resources/cat1.png"),
+#     ("cat-b", "resources/cat2.png")
+# ], -250, 100)
 
 @on(cat2)
 def when_g_key_pressed(sprite):
