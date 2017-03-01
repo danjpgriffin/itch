@@ -39,6 +39,7 @@ class Sprite:
         self._image = pygame.image.load(filename)
         self._direction = 90
         self._scheduler = scheduler
+        self._visible = True
 
     # Motion methods
 
@@ -102,7 +103,6 @@ class Sprite:
         self._y = y
         self._scheduler.schedule()
 
-    # Better implementation required
     def if_on_edge_bounce(self):
         (rx, ry) = self._real_coords()
 
@@ -132,6 +132,14 @@ class Sprite:
     def direction(self):
         return self._direction
 
+    # Looks methods
+
+    def show(self):
+        self._visible = True
+
+    def hide(self):
+        self._visible = False
+
     # Sensing methods
 
     def touching_mouse_pointer(self):
@@ -142,7 +150,8 @@ class Sprite:
     # Non-scratch mapped public methods
 
     def render_in(self, screen):
-        screen.blit(self._transformed_image, self._real_coords())
+        if self._visible:
+            screen.blit(self._transformed_image, self._real_coords())
         # pygame.draw.rect(screen, (0,0,0), self._transformed_image.get_rect().move(self._real_coords()), 1)
 
     def register(self, function):
@@ -157,6 +166,9 @@ class Sprite:
             task.run_until_reschedule()
 
     def hit_test(self, coords):
+        if not self._visible:
+            return False
+
         r = self._bounding_box()
         (x, y) = to_real_coord(coords)
         if r.collidepoint(x, y) != 0:

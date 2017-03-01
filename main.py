@@ -10,6 +10,21 @@ def when_g_key_pressed(sprite):
     sprite.glide_secs_to_x_y(1, mouse_x(), mouse_y())
 
 
+@on(cat2)
+def when_s_key_pressed(sprite):
+    sprite.show()
+
+
+@on(cat2)
+def when_h_key_pressed(sprite):
+    sprite.hide()
+
+
+@on(cat2)
+def when_this_sprite_clicked(sprite):
+    print("Hello")
+
+
 @on(cat)
 def when_f_key_pressed(sprite):
     sprite.move_steps(10)
