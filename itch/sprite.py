@@ -1,6 +1,6 @@
 import math
 
-import pygame
+from itch.costume import Costume
 from itch import pyscratch
 from itch.utils import scratch_dir_to_degrees, read_mouse, to_real_coord, Rotate
 
@@ -16,14 +16,7 @@ class Sprite:
                 val = val % 360 - 360
 
             setattr(obj, "_priv_direction", val)
-            if obj._rotation_style == Rotate.all_around:
-                obj._transformed_image = pygame.transform.rotate(obj._image, scratch_dir_to_degrees(val))
-            elif obj._rotation_style == Rotate.left_right and val < 0:
-                obj._transformed_image = pygame.transform.flip(obj._image, True, False)
-            else:
-                obj._transformed_image = obj._image
-
-            obj._mask = pygame.mask.from_surface(obj._transformed_image)
+            obj._costume.rotate(scratch_dir_to_degrees(val))
 
         def __get__(self, obj, objtype):
             return getattr(obj, "_priv_direction")
@@ -35,8 +28,7 @@ class Sprite:
         self._y = y
         self._event_handlers = {}
         self._event_tasks = {}
-        self._rotation_style = pyscratch.Rotate.all_around
-        self._image = pygame.image.load(filename)
+        self._costume = Costume(filename)
         self._direction = 90
         self._scheduler = scheduler
         self._visible = True
@@ -106,13 +98,13 @@ class Sprite:
     def if_on_edge_bounce(self):
         (rx, ry) = self._real_coords()
 
-        if rx + self._transformed_image.get_rect().width > pyscratch.STAGE_WIDTH:
+        if rx + self._costume.width > pyscratch.STAGE_WIDTH:
             self._direction = -self._direction
 
         if rx <= 0:
             self._direction = -self._direction
 
-        if ry + self._transformed_image.get_rect().height > pyscratch.STAGE_HEIGHT:
+        if ry + self._costume.height > pyscratch.STAGE_HEIGHT:
             self._direction = - self._direction + 180
 
         if ry <= 0:
@@ -121,7 +113,7 @@ class Sprite:
         self._scheduler.schedule()
 
     def set_rotation_style(self, style):
-        self._rotation_style = style
+        self._costume.rotation_style = style
 
     def x_position(self):
         return self._x
@@ -151,7 +143,7 @@ class Sprite:
 
     def render_in(self, screen):
         if self._visible:
-            screen.blit(self._transformed_image, self._real_coords())
+            screen.blit(self._costume.current_image(), self._real_coords())
         # pygame.draw.rect(screen, (0,0,0), self._transformed_image.get_rect().move(self._real_coords()), 1)
 
     def register(self, function):
@@ -172,7 +164,7 @@ class Sprite:
         r = self._bounding_box()
         (x, y) = to_real_coord(coords)
         if r.collidepoint(x, y) != 0:
-            return self._mask.get_at((x - r.x, y - r.y))
+            return self._costume.mask_at((x - r.x, y - r.y))
         else:
             return False
 
@@ -210,11 +202,11 @@ class Sprite:
         self._scheduler.schedule()
 
     def _bounding_box(self):
-        return self._transformed_image.get_rect().copy().move(self._real_coords())
+        return self._costume.bounding_box_at(self._real_coords())
 
     def _real_coords(self):
-        offx = int(self._transformed_image.get_rect().width/2)
-        offy = int(self._transformed_image.get_rect().height/2)
+        offx = int(self._costume.width/2)
+        offy = int(self._costume.height/2)
 
         real = to_real_coord((self._x, self._y))
 
