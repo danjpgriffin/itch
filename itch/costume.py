@@ -1,15 +1,32 @@
 import pygame
 from itch.pyscratch import Rotate
 
-
 class Costume:
 
-    def __init__(self, filename):
-        self._image = pygame.image.load(filename)
+    def __init__(self, image_srcs):
+
+        self._image_collection = []
+
+        if isinstance(image_srcs, list):
+            for (costume_name, filename) in image_srcs:
+                self._image_collection.append((costume_name, pygame.image.load(filename)))
+        else:
+            self._image_collection.append((None, pygame.image.load(image_srcs)))
+
+        self._selected = 0
+        self._rotation = 90
+        self._image = None
+        self._transformed_image = None
         self.rotation_style = Rotate.all_around
-        self.rotate(90)
+        self.prepare_image()
+
+    def prepare_image(self):
+        self._image = self._image_collection[self._selected][1]
+        self.rotate(self._rotation)
 
     def rotate(self, degrees):
+        self._rotation = degrees
+
         if self.rotation_style == Rotate.all_around:
             self._transformed_image = pygame.transform.rotate(self._image, degrees)
         elif self.rotation_style == Rotate.left_right and degrees < 0:
@@ -18,6 +35,14 @@ class Costume:
             self._transformed_image = self._image
 
         self._mask = pygame.mask.from_surface(self._transformed_image)
+
+    def select_named(self, costume_name):
+        self._selected = [item[0] for item in self._image_collection].index(costume_name)
+        self.prepare_image()
+
+    def next_costume(self):
+        self._selected = (self._selected + 1) % len(self._image_collection)
+        self.prepare_image()
 
     @property
     def width(self):

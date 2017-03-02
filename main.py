@@ -1,13 +1,31 @@
 from itch.pyscratch import *
-cat = new_sprite("resources/cat.png", -150, 100)
-cat2 = new_sprite("resources/cat2.png", -250, 100)
+cat = new_sprite(
+    [
+        ("cat-a", "resources/cat.png"),
+        ("cat-b", "resources/cat2.png")
+    ]
+    , -150, 100)
+
 fish = new_sprite("resources/fish.png", 150, 0)
 fish2 = new_sprite("resources/fish.png", -150, -100)
 
-# cat2 = new_sprite([
-#     ("cat-a", "resources/cat1.png"),
-#     ("cat-b", "resources/cat2.png")
-# ], -250, 100)
+cat2 = new_sprite(
+    [
+        ("cat-a", "resources/cat.png"),
+        ("cat-b", "resources/cat2.png")
+    ]
+    , -250, 100)
+
+
+@on(cat2)
+def when_o_key_pressed(sprite):
+    sprite.switch_costume_to("cat-a")
+
+
+@on(cat2)
+def when_p_key_pressed(sprite):
+    sprite.switch_costume_to("cat-b")
+
 
 @on(cat2)
 def when_g_key_pressed(sprite):
@@ -32,6 +50,7 @@ def when_this_sprite_clicked(sprite):
 @on(cat)
 def when_f_key_pressed(sprite):
     sprite.move_steps(10)
+    sprite.next_costume()
     sprite.if_on_edge_bounce()
 
 

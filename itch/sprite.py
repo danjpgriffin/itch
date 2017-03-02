@@ -114,6 +114,7 @@ class Sprite:
 
     def set_rotation_style(self, style):
         self._costume.rotation_style = style
+        self._scheduler.schedule()
 
     def x_position(self):
         return self._x
@@ -128,9 +129,19 @@ class Sprite:
 
     def show(self):
         self._visible = True
+        self._scheduler.schedule()
 
     def hide(self):
         self._visible = False
+        self._scheduler.schedule()
+
+    def switch_costume_to(self, costume_name):
+        self._costume.select_named(costume_name)
+        self._scheduler.schedule()
+
+    def next_costume(self):
+        self._costume.next_costume()
+        self._scheduler.schedule()
 
     # Sensing methods
 
