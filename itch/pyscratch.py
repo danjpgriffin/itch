@@ -1,26 +1,20 @@
 import pygame
-from itch.utils import read_mouse, Rotate
+
 from itch.sched import Scheduler
 from itch.sprite import Sprite
 from itch.stage import Stage
+from itch.utils import read_mouse, Rotate
 
 STAGE_WIDTH = 480
 STAGE_HEIGHT = 360
 
 default_scheduler = Scheduler()
 
-sprite_list = []
 stage = Stage(scheduler=default_scheduler)
 
 
-def _receivers():
-    return [stage] + sprite_list
-
-
-def new_sprite(x=0, y=0, *image_sources, scheduler=default_scheduler):
-    sprite = Sprite(image_sources, x, y, scheduler)
-    sprite_list.append(sprite)
-    return sprite
+def create_sprite(x=0, y=0, *image_sources):
+    return stage.create_sprite(x, y, *image_sources)
 
 
 def on(*receivers):
@@ -47,14 +41,6 @@ def mouse_y():
 WHITE = (255, 255, 255)
 
 
-def receiver_at(coords):
-    underneath = list(filter(lambda s: s.hit_test(coords), sprite_list))
-    if len(underneath) > 0:
-        return underneath[-1]
-    else:
-        return stage
-
-
 def click_green_flag():
 
     pygame.init()
@@ -63,18 +49,18 @@ def click_green_flag():
 
     pygame.key.set_repeat(1, 5)
 
-    for receiver in _receivers():
+    for receiver in stage.receivers():
         receiver.trigger_event("when_green_flag_clicked")
 
     done = False
     while not done:
 
         for event in pygame.event.get():
-            for receiver in _receivers():
+            for receiver in stage.receivers():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    under = receiver_at(read_mouse())
+                    under = stage.receiver_at(read_mouse())
                     if isinstance(under, Sprite):
                         under.trigger_event("when_this_sprite_clicked")
                     else:
@@ -94,15 +80,12 @@ def click_green_flag():
                     if event.key == 274:
                         receiver.trigger_event("when_down_arrow_key_pressed")
 
-        for receiver in _receivers():
+        for receiver in stage.receivers():
             receiver.run_tasks_until_reschedule()
 
         if not done:
             screen.fill(WHITE)
             stage.render_in(screen)
-
-            for sprite in sprite_list:
-                sprite.render_in(screen)
 
             pygame.display.flip()
             default_scheduler.sync_clock()

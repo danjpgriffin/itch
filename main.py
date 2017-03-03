@@ -1,9 +1,9 @@
 from itch.pyscratch import *
-cat = new_sprite(-150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
-fish = new_sprite(150, 0, "resources/fish.png")
-fish2 = new_sprite(-150, -100, "resources/fish.png")
+cat = create_sprite(-150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
+fish = create_sprite(150, 0, "resources/fish.png")
+fish2 = create_sprite(-150, -100, "resources/fish.png")
 
-cat2 = new_sprite(150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
+cat2 = create_sprite(150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
 stage.load_backdrops(("party", "resources/party.png"), ("sea", "resources/underwater1.png"))
 
 
@@ -149,7 +149,7 @@ def when_space_key_pressed(sprite):
         sprite.if_on_edge_bounce()
 
 
-@on(fish2)
+# @on(fish2)
 def when_green_flag_clicked(sprite):
     while True:
         sprite.move_steps(10)

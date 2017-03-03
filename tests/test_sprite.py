@@ -1,5 +1,5 @@
 import unittest
-from itch.pyscratch import new_sprite
+from itch.stage import Stage
 
 
 class NoScheduler:
@@ -17,7 +17,7 @@ class SpriteTestCase(unittest.TestCase):
 
     def test_direction_corresponds_to_scratch(self):
 
-        unit = new_sprite("../resources/cat.png", -150, 100, NoScheduler())
+        unit = Stage(scheduler=NoScheduler()).create_sprite(-150, 100, "../resources/cat.png")
 
         self.assertEquals(unit.direction(), 90)
 
@@ -32,7 +32,7 @@ class SpriteTestCase(unittest.TestCase):
 
     def test_rotation_around_limits(self):
 
-        unit = new_sprite("../resources/cat.png", -150, 100, NoScheduler())
+        unit = Stage(scheduler=NoScheduler()).create_sprite(-150, 100, "../resources/cat.png")
 
         unit.point_in_direction(0)
         unit.turn_anti_clockwise(1)

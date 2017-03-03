@@ -1,6 +1,5 @@
 import pygame
 import itch.pyscratch
-import itch.pyscratch
 from enum import Enum
 
 
