@@ -2,10 +2,11 @@ import math
 
 from itch.costume import Costume
 from itch import pyscratch
-from itch.utils import scratch_dir_to_degrees, read_mouse, to_real_coord, Rotate
+from itch.event_receiver import EventReceiver
+from itch.utils import scratch_dir_to_degrees, read_mouse, to_real_coord
 
 
-class Sprite:
+class Sprite(EventReceiver):
 
     class _DirectionDescriptor:
 
@@ -16,7 +17,7 @@ class Sprite:
                 val = val % 360 - 360
 
             setattr(obj, "_priv_direction", val)
-            obj._costume.rotate(scratch_dir_to_degrees(val))
+            getattr(obj, "_costume").rotate(scratch_dir_to_degrees(val))
 
         def __get__(self, obj, objtype):
             return getattr(obj, "_priv_direction")
@@ -24,13 +25,11 @@ class Sprite:
     _direction = _DirectionDescriptor()
 
     def __init__(self, image_sources, x, y, scheduler):
+        super().__init__(scheduler)
         self._x = x
         self._y = y
-        self._event_handlers = {}
-        self._event_tasks = {}
         self._costume = Costume(image_sources)
         self._direction = 90
-        self._scheduler = scheduler
         self._visible = True
 
     # Motion methods
@@ -38,19 +37,19 @@ class Sprite:
     def move_steps(self, steps):
         self._x += self._cos_dir() * steps
         self._y += (self._sin_dir() * steps)
-        self._scheduler.schedule()
+        self._schedule()
 
     def turn_clockwise(self, deg):
         self._turn_degrees(deg)
-        self._scheduler.schedule()
+        self._schedule()
 
     def turn_anti_clockwise(self, deg):
         self._turn_degrees(-deg)
-        self._scheduler.schedule()
+        self._schedule()
 
     def point_in_direction(self, deg):
         self._direction = deg
-        self._scheduler.schedule()
+        self._schedule()
 
     def point_towards_mouse_pointer(self):
         self._point_towards(read_mouse())
@@ -61,13 +60,13 @@ class Sprite:
     def go_to_x_y(self, x, y):
         self._x = x
         self._y = y
-        self._scheduler.schedule()
+        self._schedule()
 
     def go_to_mouse_pointer(self):
         pos = read_mouse()
         self._x = pos[0]
         self._y = pos[1]
-        self._scheduler.schedule()
+        self._schedule()
 
     def glide_secs_to_x_y(self, secs, x, y):
         steps = self._scheduler.fps() * secs
@@ -81,19 +80,19 @@ class Sprite:
 
     def change_x_by(self, amount):
         self._x = self._x + amount
-        self._scheduler.schedule()
+        self._schedule()
 
     def set_x_to(self, x):
         self._x = x
-        self._scheduler.schedule()
+        self._schedule()
 
     def change_y_by(self, amount):
         self._y = self._y + amount
-        self._scheduler.schedule()
+        self._schedule()
 
     def set_y_to(self, y):
         self._y = y
-        self._scheduler.schedule()
+        self._schedule()
 
     def if_on_edge_bounce(self):
         (rx, ry) = self._real_coords()
@@ -110,11 +109,11 @@ class Sprite:
         if ry <= 0:
             self._direction = - self._direction + 180
 
-        self._scheduler.schedule()
+        self._schedule()
 
     def set_rotation_style(self, style):
         self._costume.rotation_style = style
-        self._scheduler.schedule()
+        self._schedule()
 
     def x_position(self):
         return self._x
@@ -129,25 +128,25 @@ class Sprite:
 
     def show(self):
         self._visible = True
-        self._scheduler.schedule()
+        self._schedule()
 
     def hide(self):
         self._visible = False
-        self._scheduler.schedule()
+        self._schedule()
 
     def switch_costume_to(self, costume_name):
         self._costume.select_named(costume_name)
-        self._scheduler.schedule()
+        self._schedule()
 
     def next_costume(self):
         self._costume.next_costume()
-        self._scheduler.schedule()
+        self._schedule()
 
     # Sensing methods
 
     def touching_mouse_pointer(self):
         answer = self.hit_test(read_mouse())
-        self._scheduler.schedule()
+        self._schedule()
         return answer
 
     # Non-scratch mapped public methods
@@ -156,17 +155,6 @@ class Sprite:
         if self._visible:
             screen.blit(self._costume.current_image(), self._real_coords())
         # pygame.draw.rect(screen, (0,0,0), self._transformed_image.get_rect().move(self._real_coords()), 1)
-
-    def register(self, function):
-        self._event_handlers[function.__name__] = function
-
-    def trigger_event(self, event_name):
-        if event_name in self._event_handlers:
-            self._queue_event(event_name)
-
-    def run_tasks_until_reschedule(self):
-        for task in [val for val in self._event_tasks.values()]:
-            task.run_until_reschedule()
 
     def hit_test(self, coords):
         if not self._visible:
@@ -189,14 +177,7 @@ class Sprite:
 
     def _turn_degrees(self, deg):
         self._direction += deg
-        self._scheduler.schedule()
-
-    def _queue_event(self, event_name):
-
-        if event_name not in self._event_tasks:
-            self._event_tasks[event_name] = self._scheduler.task(self._event_handlers[event_name], self)
-
-        self._event_tasks[event_name].invoke()
+        self._schedule()
 
     def _point_towards(self, coords):
         dx = coords[0] - self._x
@@ -210,7 +191,7 @@ class Sprite:
         if dy < 0:
             self._direction += 180
 
-        self._scheduler.schedule()
+        self._schedule()
 
     def _bounding_box(self):
         return self._costume.bounding_box_at(self._real_coords())
