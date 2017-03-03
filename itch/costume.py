@@ -15,7 +15,7 @@ class Costume:
                 self._image_collection.append((None, pygame.image.load(source)))
 
         self._selected = 0
-        self._rotation = 90
+        self._rotation = 0
         self._image = None
         self._transformed_image = None
         self._mask = None
@@ -23,8 +23,9 @@ class Costume:
         self.prepare_image()
 
     def prepare_image(self):
-        self._image = self._image_collection[self._selected][1]
-        self.rotate(self._rotation)
+        if len(self._image_collection):
+            self._image = self._image_collection[self._selected][1]
+            self.rotate(self._rotation)
 
     def rotate(self, degrees):
         self._rotation = degrees

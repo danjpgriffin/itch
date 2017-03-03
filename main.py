@@ -3,7 +3,8 @@ cat = new_sprite(-150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources
 fish = new_sprite(150, 0, "resources/fish.png")
 fish2 = new_sprite(-150, -100, "resources/fish.png")
 
-cat2 = new_sprite(-250, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
+cat2 = new_sprite(150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
+stage.load_backdrops(("party", "resources/party.png"), ("sea", "resources/underwater1.png"))
 
 
 @on(cat2)

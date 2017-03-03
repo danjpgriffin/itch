@@ -2,13 +2,15 @@ import pygame
 from itch.utils import read_mouse, Rotate
 from itch.sched import Scheduler
 from itch.sprite import Sprite
+from itch.stage import Stage
 
-STAGE_WIDTH = 700
-STAGE_HEIGHT = 500
+STAGE_WIDTH = 480
+STAGE_HEIGHT = 360
 
 default_scheduler = Scheduler()
 
 sprite_list = []
+stage = Stage()
 
 
 def new_sprite(x=0, y=0, *image_sources, scheduler=default_scheduler):
@@ -82,6 +84,7 @@ def click_green_flag():
 
         if not done:
             screen.fill(WHITE)
+            stage.render_in(screen)
 
             for sprite in sprite_list:
                 sprite.render_in(screen)
