@@ -2,15 +2,12 @@ import pygame
 
 from itch.sched import Scheduler
 from itch.sprite import Sprite
-from itch.stage import Stage
+import itch.stage
 from itch.utils import read_mouse, Rotate
-
-STAGE_WIDTH = 480
-STAGE_HEIGHT = 360
 
 default_scheduler = Scheduler()
 
-stage = Stage(scheduler=default_scheduler)
+stage = itch.stage.Stage(scheduler=default_scheduler)
 
 
 def create_sprite(x=0, y=0, *image_sources):
@@ -44,7 +41,7 @@ WHITE = (255, 255, 255)
 def click_green_flag():
 
     pygame.init()
-    screen = pygame.display.set_mode((STAGE_WIDTH, STAGE_HEIGHT))
+    screen = pygame.display.set_mode((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT))
     pygame.display.set_caption("Hello Itch")
 
     pygame.key.set_repeat(1, 5)

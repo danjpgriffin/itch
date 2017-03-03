@@ -1,7 +1,7 @@
 import math
 
 from itch.costume import Costume
-from itch import pyscratch
+import itch.stage
 from itch.event_receiver import EventReceiver
 from itch.utils import scratch_dir_to_degrees, read_mouse, to_real_coord
 
@@ -97,13 +97,13 @@ class Sprite(EventReceiver):
     def if_on_edge_bounce(self):
         (rx, ry) = self._real_coords()
 
-        if rx + self._costume.width > pyscratch.STAGE_WIDTH:
+        if rx + self._costume.width > itch.stage.STAGE_WIDTH:
             self._direction = -self._direction
 
         if rx <= 0:
             self._direction = -self._direction
 
-        if ry + self._costume.height > pyscratch.STAGE_HEIGHT:
+        if ry + self._costume.height > itch.stage.STAGE_HEIGHT:
             self._direction = - self._direction + 180
 
         if ry <= 0:

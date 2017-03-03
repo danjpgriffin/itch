@@ -1,6 +1,9 @@
-from itch.costume import Costume
+import itch.costume
 from itch.event_receiver import EventReceiver
-from itch.sprite import Sprite
+import itch.sprite
+
+STAGE_WIDTH = 480
+STAGE_HEIGHT = 360
 
 
 class Stage(EventReceiver):
@@ -12,7 +15,7 @@ class Stage(EventReceiver):
         self.sprite_list = []
 
     def load_backdrops(self, *image_sources):
-        self._costume = Costume(image_sources)
+        self._costume = itch.costume.Costume(image_sources)
 
     def render_in(self, screen):
         if self._costume.current_image():
@@ -33,7 +36,7 @@ class Stage(EventReceiver):
         return [self] + self.sprite_list
 
     def create_sprite(self, x=0, y=0, *image_sources):
-        sprite = Sprite(image_sources, x, y, self._scheduler)
+        sprite = itch.sprite.Sprite(image_sources, x, y, self._scheduler)
         self.sprite_list.append(sprite)
         return sprite
 
