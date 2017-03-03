@@ -36,7 +36,7 @@ class Stage(EventReceiver):
         return [self] + self.sprite_list
 
     def create_sprite(self, x=0, y=0, *image_sources):
-        sprite = itch.sprite.Sprite(image_sources, x, y, self._scheduler)
+        sprite = itch.sprite.Sprite(image_sources, x, y, self, self._scheduler)
         self.sprite_list.append(sprite)
         return sprite
 
@@ -46,3 +46,15 @@ class Stage(EventReceiver):
             return underneath[-1]
         else:
             return self
+
+    def bring_to_front(self, sprite):
+        self.sprite_list.remove(sprite)
+        self.sprite_list.append(sprite)
+        self._schedule()
+
+    def send_back_layers(self, sprite, number):
+        current = self.sprite_list.index(sprite)
+        new_pos = max(0, current - number)
+        self.sprite_list.remove(sprite)
+        self.sprite_list.insert(new_pos, sprite)
+        self._schedule()

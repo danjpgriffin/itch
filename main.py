@@ -22,6 +22,17 @@ def when_9_key_pressed():
     stage.switch_backdrop_to("sea")
 
 
+@on(cat)
+def when_2_key_pressed(sprite):
+    sprite.go_back_layers(1)
+    wait_secs(0.5)
+
+
+@on(cat)
+def when_1_key_pressed(sprite):
+    sprite.go_to_front()
+
+
 @on(cat2)
 def when_o_key_pressed(sprite):
     sprite.switch_costume_to("cat-a")

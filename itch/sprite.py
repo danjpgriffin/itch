@@ -24,13 +24,14 @@ class Sprite(EventReceiver):
 
     _direction = _DirectionDescriptor()
 
-    def __init__(self, image_sources, x, y, scheduler):
+    def __init__(self, image_sources, x, y, stage, scheduler):
         super().__init__(scheduler)
         self._x = x
         self._y = y
         self._costume = Costume(image_sources)
         self._direction = 90
         self._visible = True
+        self._stage = stage
 
     # Motion methods
 
@@ -141,6 +142,12 @@ class Sprite(EventReceiver):
     def next_costume(self):
         self._costume.next_costume()
         self._schedule()
+
+    def go_to_front(self):
+        self._stage.bring_to_front(self)
+
+    def go_back_layers(self, number):
+        self._stage.send_back_layers(self, number)
 
     # Sensing methods
 
