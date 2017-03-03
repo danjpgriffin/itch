@@ -9,7 +9,9 @@ class Scheduler:
         self._clock = pygame.time.Clock()
 
     def schedule(self):
-        greenlet.getcurrent().parent.switch()
+        parent = greenlet.getcurrent().parent
+        if parent:
+            parent.switch()
 
     def wait(self, millis):
         target = pygame.time.get_ticks() + millis
