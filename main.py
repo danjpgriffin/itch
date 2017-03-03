@@ -8,18 +8,18 @@ stage.load_backdrops(("party", "resources/party.png"), ("sea", "resources/underw
 
 
 @on(stage)
-def when_stage_clicked(stage):
-    print("Stage clicked")
+def when_stage_clicked():
+    stage.next_backdrop()
 
 
 @on(stage)
-def when_0_key_pressed(stage):
-    print("Pressed 0")
+def when_0_key_pressed():
+    stage.switch_backdrop_to("party")
 
 
 @on(stage)
-def when_9_key_pressed(stage):
-    print("Pressed 9")
+def when_9_key_pressed():
+    stage.switch_backdrop_to("sea")
 
 
 @on(cat2)

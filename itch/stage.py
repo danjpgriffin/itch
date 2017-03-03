@@ -15,3 +15,11 @@ class Stage(EventReceiver):
     def render_in(self, screen):
         if self._costume.current_image():
             screen.blit(self._costume.current_image(), (0, 0))
+
+    def switch_backdrop_to(self, name):
+        self._costume.select_named(name)
+        self._schedule()
+
+    def next_backdrop(self):
+        self._costume.next_costume()
+        self._schedule()

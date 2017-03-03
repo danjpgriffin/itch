@@ -1,5 +1,6 @@
 from greenlet import greenlet
 import pygame
+import inspect
 
 
 class Scheduler:
@@ -29,10 +30,11 @@ class Task:
 
     def __init__(self, func, receiver, scheduler):
         self.func = func
+        self.send_receiver = len(inspect.signature(self.func).parameters) == 1
         self.greenlet = greenlet(self.event_handler)
         self.running = False
         self.receiver = receiver
-        self._scheduler = scheduler
+        self.scheduler = scheduler
 
     def invoke(self):
         self.running = True
@@ -43,7 +45,10 @@ class Task:
     def event_handler(self):
         while True:
             if self.running:
-                self.func(self.receiver)
+                if self.send_receiver:
+                    self.func(self.receiver)
+                else:
+                    self.func()
 
             self.running = False
-            self._scheduler.schedule()
+            self.scheduler.schedule()
