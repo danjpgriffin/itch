@@ -1,22 +1,24 @@
 import pygame
 from itch.pyscratch import Rotate
 
+
 class Costume:
 
-    def __init__(self, image_srcs):
+    def __init__(self, image_sources):
 
         self._image_collection = []
 
-        if isinstance(image_srcs, list):
-            for (costume_name, filename) in image_srcs:
-                self._image_collection.append((costume_name, pygame.image.load(filename)))
-        else:
-            self._image_collection.append((None, pygame.image.load(image_srcs)))
+        for source in image_sources:
+            if isinstance(source, tuple):
+                self._image_collection.append((source[0], pygame.image.load(source[1])))
+            else:
+                self._image_collection.append((None, pygame.image.load(source)))
 
         self._selected = 0
         self._rotation = 90
         self._image = None
         self._transformed_image = None
+        self._mask = None
         self.rotation_style = Rotate.all_around
         self.prepare_image()
 

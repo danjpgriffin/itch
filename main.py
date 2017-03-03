@@ -1,20 +1,9 @@
 from itch.pyscratch import *
-cat = new_sprite(
-    [
-        ("cat-a", "resources/cat.png"),
-        ("cat-b", "resources/cat2.png")
-    ]
-    , -150, 100)
+cat = new_sprite(-150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
+fish = new_sprite(150, 0, "resources/fish.png")
+fish2 = new_sprite(-150, -100, "resources/fish.png")
 
-fish = new_sprite("resources/fish.png", 150, 0)
-fish2 = new_sprite("resources/fish.png", -150, -100)
-
-cat2 = new_sprite(
-    [
-        ("cat-a", "resources/cat.png"),
-        ("cat-b", "resources/cat2.png")
-    ]
-    , -250, 100)
+cat2 = new_sprite(-250, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
 
 
 @on(cat2)

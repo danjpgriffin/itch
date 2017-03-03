@@ -11,8 +11,8 @@ default_scheduler = Scheduler()
 sprite_list = []
 
 
-def new_sprite(filename, x=0, y=0, scheduler=default_scheduler):
-    sprite = Sprite(filename, x, y, scheduler)
+def new_sprite(x=0, y=0, *image_sources, scheduler=default_scheduler):
+    sprite = Sprite(image_sources, x, y, scheduler)
     sprite_list.append(sprite)
     return sprite
 

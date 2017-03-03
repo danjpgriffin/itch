@@ -23,12 +23,12 @@ class Sprite:
 
     _direction = _DirectionDescriptor()
 
-    def __init__(self, filename, x, y, scheduler):
+    def __init__(self, image_sources, x, y, scheduler):
         self._x = x
         self._y = y
         self._event_handlers = {}
         self._event_tasks = {}
-        self._costume = Costume(filename)
+        self._costume = Costume(image_sources)
         self._direction = 90
         self._scheduler = scheduler
         self._visible = True
