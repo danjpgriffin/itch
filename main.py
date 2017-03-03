@@ -12,6 +12,16 @@ def when_stage_clicked(stage):
     print("Stage clicked")
 
 
+@on(stage)
+def when_0_key_pressed(stage):
+    print("Pressed 0")
+
+
+@on(stage)
+def when_9_key_pressed(stage):
+    print("Pressed 9")
+
+
 @on(cat2)
 def when_o_key_pressed(sprite):
     sprite.switch_costume_to("cat-a")

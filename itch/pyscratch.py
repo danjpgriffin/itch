@@ -46,13 +46,13 @@ def mouse_y():
 
 WHITE = (255, 255, 255)
 
+
 def receiver_at(coords):
     underneath = list(filter(lambda s: s.hit_test(coords), sprite_list))
     if len(underneath) > 0:
         return underneath[-1]
     else:
         return stage
-
 
 
 def click_green_flag():
@@ -81,7 +81,7 @@ def click_green_flag():
                         under.trigger_event("when_stage_clicked")
 
                 if event.type == pygame.KEYDOWN:
-                    if 97 <= event.key <= 122:
+                    if (48 <= event.key <= 57) or (97 <= event.key <= 122):
                         receiver.trigger_event("when_" + chr(event.key) + "_key_pressed")
                     if event.key == 32:
                         receiver.trigger_event("when_space_key_pressed")
