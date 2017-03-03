@@ -1,9 +1,11 @@
 from itch.costume import Costume
+from itch.event_receiver import EventReceiver
 
 
-class Stage:
+class Stage(EventReceiver):
 
-    def __init__(self, *image_sources):
+    def __init__(self, *image_sources, scheduler):
+        super().__init__(scheduler)
         self._costume = None
         self.load_backdrops(*image_sources)
 

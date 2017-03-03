@@ -10,7 +10,11 @@ STAGE_HEIGHT = 360
 default_scheduler = Scheduler()
 
 sprite_list = []
-stage = Stage()
+stage = Stage(scheduler=default_scheduler)
+
+
+def _receivers():
+    return [stage] + sprite_list
 
 
 def new_sprite(x=0, y=0, *image_sources, scheduler=default_scheduler):
@@ -51,36 +55,38 @@ def click_green_flag():
 
     pygame.key.set_repeat(1, 5)
 
-    for sprite in sprite_list:
-        sprite.trigger_event("when_green_flag_clicked")
+    for receiver in _receivers():
+        receiver.trigger_event("when_green_flag_clicked")
 
     done = False
     while not done:
 
         for event in pygame.event.get():
-            for sprite in sprite_list:
+            for receiver in _receivers():
                 if event.type == pygame.QUIT:
                     done = True
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if sprite.hit_test(read_mouse()):
-                        sprite.trigger_event("when_this_sprite_clicked")
+                    if isinstance(receiver, Sprite) and receiver.hit_test(read_mouse()):
+                        receiver.trigger_event("when_this_sprite_clicked")
+                    else:
+                        receiver.trigger_event("when_stage_clicked")
 
                 if event.type == pygame.KEYDOWN:
                     if 97 <= event.key <= 122:
-                        sprite.trigger_event("when_" + chr(event.key) + "_key_pressed")
+                        receiver.trigger_event("when_" + chr(event.key) + "_key_pressed")
                     if event.key == 32:
-                        sprite.trigger_event("when_space_key_pressed")
+                        receiver.trigger_event("when_space_key_pressed")
                     if event.key == 275:
-                        sprite.trigger_event("when_right_arrow_key_pressed")
+                        receiver.trigger_event("when_right_arrow_key_pressed")
                     if event.key == 276:
-                        sprite.trigger_event("when_left_arrow_key_pressed")
+                        receiver.trigger_event("when_left_arrow_key_pressed")
                     if event.key == 273:
-                        sprite.trigger_event("when_up_arrow_key_pressed")
+                        receiver.trigger_event("when_up_arrow_key_pressed")
                     if event.key == 274:
-                        sprite.trigger_event("when_down_arrow_key_pressed")
+                        receiver.trigger_event("when_down_arrow_key_pressed")
 
-        for sprite in sprite_list:
-            sprite.run_tasks_until_reschedule()
+        for receiver in _receivers():
+            receiver.run_tasks_until_reschedule()
 
         if not done:
             screen.fill(WHITE)

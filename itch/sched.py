@@ -30,7 +30,6 @@ class Task:
     def __init__(self, func, receiver, scheduler):
         self.func = func
         self.greenlet = greenlet(self.event_handler)
-        self.greenlet.itch_task = self
         self.running = False
         self.receiver = receiver
         self._scheduler = scheduler

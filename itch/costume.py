@@ -1,5 +1,5 @@
 import pygame
-from itch.pyscratch import Rotate
+from itch.utils import Rotate
 
 
 class Costume:

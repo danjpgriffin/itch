@@ -7,6 +7,11 @@ cat2 = new_sprite(150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources
 stage.load_backdrops(("party", "resources/party.png"), ("sea", "resources/underwater1.png"))
 
 
+@on(stage)
+def when_stage_clicked(stage):
+    print("Stage clicked")
+
+
 @on(cat2)
 def when_o_key_pressed(sprite):
     sprite.switch_costume_to("cat-a")
