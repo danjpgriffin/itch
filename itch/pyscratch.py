@@ -41,7 +41,8 @@ WHITE = (255, 255, 255)
 def click_green_flag():
 
     pygame.init()
-    screen = pygame.display.set_mode((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT))
+    # screen = pygame.display.set_mode((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT))
+    screen = pygame.display.set_mode((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT*2))
     pygame.display.set_caption("Hello Itch")
 
     pygame.key.set_repeat(1, 5)
@@ -83,6 +84,9 @@ def click_green_flag():
         if not done:
             screen.fill(WHITE)
             stage.render_in(screen)
+
+            surf2 = stage.surface_without_sprite_filtered_by_color(stage.sprite_list[0], (0, 0, 0))
+            screen.blit(surf2, (0, itch.stage.STAGE_HEIGHT))
 
             pygame.display.flip()
             default_scheduler.sync_clock()
