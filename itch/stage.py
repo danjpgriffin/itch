@@ -2,9 +2,14 @@ import itch.costume
 from itch.event_receiver import EventReceiver
 import itch.sprite
 import pygame
+import itch.data_view
 
 STAGE_WIDTH = 480
 STAGE_HEIGHT = 360
+
+
+class DataContainer:
+    pass
 
 
 class Stage(EventReceiver):
@@ -16,6 +21,8 @@ class Stage(EventReceiver):
         self._costume = None
         self.load_backdrops(*image_sources)
         self.sprite_list = []
+        self.data_container = DataContainer()
+        self.data_views = []
 
     def load_backdrops(self, *image_sources):
         self._costume = itch.costume.Costume(image_sources)
@@ -27,6 +34,9 @@ class Stage(EventReceiver):
 
         for sprite in self.sprite_list:
             sprite.render_in(screen)
+
+        for dv in self.data_views:
+            dv.render_in(screen)
 
     def switch_backdrop_to(self, name):
         self._costume.select_named(name)
@@ -43,6 +53,10 @@ class Stage(EventReceiver):
         sprite = itch.sprite.Sprite(image_sources, x, y, self, self._scheduler)
         self.sprite_list.append(sprite)
         return sprite
+
+    def create_data(self, name, value):
+        setattr(self.data_container, name, value)
+        self.data_views.append(itch.data_view.DataView(0, 0, name, self.data_container, self._scheduler))
 
     def receiver_at(self, coords):
         underneath = list(filter(lambda s: s.hit_test(coords), self.sprite_list))

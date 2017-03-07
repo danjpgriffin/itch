@@ -6,6 +6,8 @@ fish2 = create_sprite(-150, -100, "resources/fish.png")
 cat2 = create_sprite(150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
 stage.load_backdrops(("party", "resources/party.png"), ("sea", "resources/underwater1.png"))
 
+stage.create_data("score", 42)
+
 
 @on(stage)
 def when_stage_clicked():
@@ -128,11 +130,13 @@ def when_y_key_pressed(sprite):
 @on(cat)
 def when_l_key_pressed(sprite):
     sprite.turn_anti_clockwise(10)
+    data.score -= 1
 
 
 @on(cat)
 def when_r_key_pressed(sprite):
     sprite.turn_clockwise(10)
+    data.score += 1
 
 
 @on(cat)

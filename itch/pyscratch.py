@@ -8,16 +8,15 @@ from itch.utils import read_mouse, Rotate
 default_scheduler = Scheduler()
 
 stage = itch.stage.Stage(scheduler=default_scheduler)
-
-
-class DataContainer:
-    pass
-
-data = DataContainer()
+data = stage.data_container
 
 
 def create_sprite(x=0, y=0, *image_sources):
     return stage.create_sprite(x, y, *image_sources)
+
+
+def create_data(name, value):
+    return stage.create_data(name, value)
 
 
 def on(*receivers):
@@ -44,6 +43,7 @@ def mouse_y():
 def click_green_flag():
 
     pygame.init()
+    pygame.font.init()
     screen = pygame.display.set_mode((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT))
     pygame.display.set_caption("Hello Itch")
 
