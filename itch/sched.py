@@ -27,6 +27,9 @@ class Scheduler:
     def fps(self):
         return int(self._clock.get_fps())
 
+    def stop_this_script(self):
+        raise StopThisScriptException
+
 
 class Task:
 
@@ -46,11 +49,18 @@ class Task:
 
     def event_handler(self):
         while True:
-            if self.running:
-                if self.send_receiver:
-                    self.func(self.receiver)
-                else:
-                    self.func()
+            try:
+                if self.running:
+                    if self.send_receiver:
+                        self.func(self.receiver)
+                    else:
+                        self.func()
+            except StopThisScriptException:
+                pass
 
             self.running = False
             self.scheduler.schedule()
+
+
+class StopThisScriptException(Exception):
+    pass

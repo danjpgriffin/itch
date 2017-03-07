@@ -68,8 +68,17 @@ def when_f_key_pressed(sprite):
     sprite.move_steps(10)
     sprite.next_costume()
     sprite.if_on_edge_bounce()
-    if sprite.touching_color((39, 37, 27)):
-        sprite.point_in_direction(-sprite.direction())
+    if sprite.touching_color((236, 194, 128)):
+        sprite.go_to_x_y(0, 0)
+
+
+@on(cat)
+def when_i_key_pressed(sprite):
+    while True:
+        if sprite.touching_color((236, 194, 128)):
+            sprite.stop_this_script()
+        else:
+            sprite.change_y_by(-10)
 
 
 

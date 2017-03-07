@@ -176,6 +176,9 @@ class Sprite(EventReceiver):
         else:
             return False
 
+    def stop_this_script(self):
+        self._scheduler.stop_this_script()
+
     # Internal methods
 
     def _sin_dir(self):

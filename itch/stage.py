@@ -65,7 +65,7 @@ class Stage(EventReceiver):
 
     def mask_without_sprite_filtered_by_color(self, no_render_sprite, color):
         target = (0, 0, 0, 255)
-        threshold = (16, 16, 16, 0)
+        threshold = (8, 8, 8, 0)
 
         render_surface = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
         threshold_surface = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
