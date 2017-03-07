@@ -10,6 +10,12 @@ default_scheduler = Scheduler()
 stage = itch.stage.Stage(scheduler=default_scheduler)
 
 
+class DataContainer:
+    pass
+
+data = DataContainer()
+
+
 def create_sprite(x=0, y=0, *image_sources):
     return stage.create_sprite(x, y, *image_sources)
 
