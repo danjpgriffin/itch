@@ -62,18 +62,21 @@ class Stage(EventReceiver):
 
     def surface_without_sprite_filtered_by_color(self, no_render_sprite, color):
         bitmap = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
-        #if self._costume.current_image():
-        #    bitmap.blit(self._costume.current_image(), (0, 0))
+        bitmap2 = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
+        bitmap3 = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
+        if self._costume.current_image():
+             bitmap.blit(self._costume.current_image(), (0, 0))
 
         for sprite in self.sprite_list:
-            #if sprite != no_render_sprite:
-            sprite.render_in(bitmap)
+            if sprite != no_render_sprite:
+                sprite.render_in(bitmap)
 
-        m = pygame.mask.from_threshold(bitmap, (0, 0, 0, 255))
 
-        olist = m.outline()
-        print(olist)
-        bitmap2 = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT))
-        if (olist):
-            pygame.draw.lines(bitmap2,(200,150,150),False,olist)
+        pygame.transform.threshold(bitmap2, bitmap, (255,163,66, 0), (40,40,40,255), (0,0,0,255), True)
+        mask = pygame.mask.from_surface(bitmap2)
+        mask.invert()
+        mymask = no_render_sprite._costume._mask
+        # mymask.set_at(no_render_sprite._real_coords())
+        print(mask.overlap_area(mymask, no_render_sprite._real_coords()))
+
         return bitmap2
