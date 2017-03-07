@@ -18,7 +18,7 @@ class Costume:
         self._rotation = 0
         self._image = None
         self._transformed_image = None
-        self._mask = None
+        self.mask = None
         self.rotation_style = Rotate.all_around
         self.prepare_image()
 
@@ -37,7 +37,7 @@ class Costume:
         else:
             self._transformed_image = self._image
 
-        self._mask = pygame.mask.from_surface(self._transformed_image)
+        self.mask = pygame.mask.from_surface(self._transformed_image)
 
     def select_named(self, costume_name):
         self._selected = [item[0] for item in self._image_collection].index(costume_name)
@@ -62,4 +62,4 @@ class Costume:
         return self._transformed_image
 
     def mask_at(self, coords):
-        return self._mask.get_at(coords)
+        return self.mask.get_at(coords)

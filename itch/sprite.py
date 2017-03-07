@@ -36,8 +36,8 @@ class Sprite(EventReceiver):
     # Motion methods
 
     def move_steps(self, steps):
-        self._x += self._cos_dir() * steps
-        self._y += (self._sin_dir() * steps)
+        self._x = int(self._x + self._cos_dir() * steps)
+        self._y = int(self._y + self._sin_dir() * steps)
         self._schedule()
 
     def turn_clockwise(self, deg):
@@ -152,9 +152,11 @@ class Sprite(EventReceiver):
     # Sensing methods
 
     def touching_mouse_pointer(self):
-        answer = self.hit_test(read_mouse())
-        self._schedule()
-        return answer
+        return self._schedule(self.hit_test(read_mouse()))
+
+    def touching_color(self, color):
+        mask = self._stage.mask_without_sprite_filtered_by_color(self, color)
+        return self._schedule(mask.overlap_area(self._costume.mask, self._real_coords()) > 0)
 
     # Non-scratch mapped public methods
 

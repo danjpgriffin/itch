@@ -23,6 +23,7 @@ class EventReceiver:
 
         self._event_tasks[event_name].invoke()
 
-    def _schedule(self):
+    def _schedule(self, answer=None):
         self._scheduler.schedule()
+        return answer
 

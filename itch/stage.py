@@ -1,12 +1,15 @@
 import itch.costume
 from itch.event_receiver import EventReceiver
 import itch.sprite
+import pygame
 
 STAGE_WIDTH = 480
 STAGE_HEIGHT = 360
 
 
 class Stage(EventReceiver):
+
+    WHITE = (255, 255, 255)
 
     def __init__(self, *image_sources, scheduler):
         super().__init__(scheduler)
@@ -18,6 +21,7 @@ class Stage(EventReceiver):
         self._costume = itch.costume.Costume(image_sources)
 
     def render_in(self, screen):
+        screen.fill(Stage.WHITE)
         if self._costume.current_image():
             screen.blit(self._costume.current_image(), (0, 0))
 
@@ -58,3 +62,23 @@ class Stage(EventReceiver):
         self.sprite_list.remove(sprite)
         self.sprite_list.insert(new_pos, sprite)
         self._schedule()
+
+    def mask_without_sprite_filtered_by_color(self, no_render_sprite, color):
+        target = (0, 0, 0, 255)
+        threshold = (16, 16, 16, 0)
+
+        render_surface = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
+        threshold_surface = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
+
+        if self._costume.current_image():
+            render_surface.blit(self._costume.current_image(), (0, 0))
+
+        for sprite in self.sprite_list:
+            if sprite != no_render_sprite:
+                sprite.render_in(render_surface)
+
+        pygame.transform.threshold(threshold_surface, render_surface, list(color) + [0], threshold, target, True)
+        mask = pygame.mask.from_surface(threshold_surface)
+        mask.invert()
+
+        return mask

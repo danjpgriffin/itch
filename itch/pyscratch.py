@@ -35,9 +35,6 @@ def mouse_y():
     return read_mouse()[1]
 
 
-WHITE = (255, 255, 255)
-
-
 def click_green_flag():
 
     pygame.init()
@@ -81,7 +78,6 @@ def click_green_flag():
             receiver.run_tasks_until_reschedule()
 
         if not done:
-            screen.fill(WHITE)
             stage.render_in(screen)
 
             pygame.display.flip()

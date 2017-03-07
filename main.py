@@ -68,6 +68,9 @@ def when_f_key_pressed(sprite):
     sprite.move_steps(10)
     sprite.next_costume()
     sprite.if_on_edge_bounce()
+    if sprite.touching_color((39, 37, 27)):
+        sprite.point_in_direction(-sprite.direction())
+
 
 
 @on(cat)
