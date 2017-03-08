@@ -1,6 +1,7 @@
 from itch.event_receiver import EventReceiver
 import pygame
 
+
 class DataView(EventReceiver):
 
     GREY = (193, 196, 199)
@@ -16,7 +17,7 @@ class DataView(EventReceiver):
         self.data_container = data_container
 
     def render_in(self, screen):
-        font = pygame.font.SysFont("Arial", 12, True)
+        font = pygame.font.SysFont("Arial", 26, True)
         val = str(getattr(self.data_container, self.name))
         img = font.render(self.name + ": " + val, True, DataView.BLACK)
         r = pygame.Rect(self.x, self.y, img.get_rect().width, img.get_rect().height)
