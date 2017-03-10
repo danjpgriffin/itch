@@ -36,8 +36,8 @@ class Sprite(EventReceiver):
     # Motion methods
 
     def move_steps(self, steps):
-        self._x = int(self._x + self._cos_dir() * steps)
-        self._y = int(self._y + self._sin_dir() * steps)
+        self._x = round(self._x + self._cos_dir() * steps)
+        self._y = round(self._y + self._sin_dir() * steps)
         self._schedule()
 
     def turn_clockwise(self, deg):
@@ -196,7 +196,10 @@ class Sprite(EventReceiver):
         dy = coords[1] - self._y
 
         if dy == 0:
-            self._direction = 90
+            if dx > 0:
+                self._direction = 90
+            else:
+                self._direction = -90
         else:
             self._direction = (int(math.degrees(math.atan(dx/dy))))
 
