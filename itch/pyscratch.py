@@ -1,7 +1,6 @@
 import pygame
 
 from itch.sched import Scheduler
-from itch.sprite import Sprite
 import itch.stage
 from itch.utils import read_mouse, Rotate
 
@@ -49,39 +48,32 @@ def click_green_flag():
 
     pygame.key.set_repeat(1, 5)
 
-    for receiver in stage.receivers():
-        receiver.trigger_event("when_green_flag_clicked")
+    stage.broadcast("when_green_flag_clicked")
 
     done = False
     while not done:
 
         for event in pygame.event.get():
-            for receiver in stage.receivers():
-                if event.type == pygame.QUIT:
-                    done = True
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    under = stage.receiver_at(read_mouse())
-                    if isinstance(under, Sprite):
-                        under.trigger_event("when_this_sprite_clicked")
-                    else:
-                        under.trigger_event("when_stage_clicked")
 
-                if event.type == pygame.KEYDOWN:
-                    if (48 <= event.key <= 57) or (97 <= event.key <= 122):
-                        receiver.trigger_event("when_" + chr(event.key) + "_key_pressed")
-                    if event.key == 32:
-                        receiver.trigger_event("when_space_key_pressed")
-                    if event.key == 275:
-                        receiver.trigger_event("when_right_arrow_key_pressed")
-                    if event.key == 276:
-                        receiver.trigger_event("when_left_arrow_key_pressed")
-                    if event.key == 273:
-                        receiver.trigger_event("when_up_arrow_key_pressed")
-                    if event.key == 274:
-                        receiver.trigger_event("when_down_arrow_key_pressed")
+            if event.type == pygame.QUIT:
+                done = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                stage.broadcast("mouse_clicked")
+            if event.type == pygame.KEYDOWN:
+                if (48 <= event.key <= 57) or (97 <= event.key <= 122):
+                    stage.broadcast("when_" + chr(event.key) + "_key_pressed")
+                if event.key == 32:
+                    stage.broadcast("when_space_key_pressed")
+                if event.key == 275:
+                    stage.broadcast("when_right_arrow_key_pressed")
+                if event.key == 276:
+                    stage.broadcast("when_left_arrow_key_pressed")
+                if event.key == 273:
+                    stage.broadcast("when_up_arrow_key_pressed")
+                if event.key == 274:
+                    stage.broadcast("when_down_arrow_key_pressed")
 
-        for receiver in stage.receivers():
-            receiver.run_tasks_until_reschedule()
+        stage.run_all_tasks_until_reschedule()
 
         if not done:
             stage.render_in(screen)

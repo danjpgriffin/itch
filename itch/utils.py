@@ -8,6 +8,7 @@ class Rotate(Enum):
     dont_rotate = 2
     all_around = 3
 
+
 def scratch_dir_to_degrees(sd):
     norm = sd % 360
 

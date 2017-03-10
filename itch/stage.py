@@ -3,6 +3,7 @@ from itch.event_receiver import EventReceiver
 import itch.sprite
 import pygame
 import itch.data_view
+import itch.utils
 
 STAGE_WIDTH = 480
 STAGE_HEIGHT = 360
@@ -96,3 +97,19 @@ class Stage(EventReceiver):
         mask.invert()
 
         return mask
+
+    def broadcast(self, name):
+
+        if name == "mouse_clicked":
+            under = self.receiver_at(itch.utils.read_mouse())
+            if isinstance(under, itch.sprite.Sprite):
+                under.trigger_event("when_this_sprite_clicked")
+            else:
+                under.trigger_event("when_stage_clicked")
+        else:
+            for receiver in self.receivers():
+                receiver.trigger_event(name)
+
+    def run_all_tasks_until_reschedule(self):
+        for receiver in self.receivers():
+            receiver.run_tasks_until_reschedule()
