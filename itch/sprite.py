@@ -149,14 +149,22 @@ class Sprite(EventReceiver):
     def go_back_layers(self, number):
         self._stage.send_back_layers(self, number)
 
+    # Events
+
+    def broadcast(self, event_name):
+        self._stage.broadcast(event_name)
+
     # Sensing methods
 
     def touching_mouse_pointer(self):
         return self._schedule(self.hit_test(read_mouse()))
 
-    def touching_color(self, color):
-        mask = self._stage.mask_without_sprite_filtered_by_color(self, color)
-        return self._schedule(mask.overlap_area(self._costume.mask, self._real_coords()) > 0)
+    def touching_edge(self):
+        (rx, ry) = self._real_coords()
+        return self._schedule(rx + self._costume.width > itch.stage.STAGE_WIDTH
+                              or rx <= 0
+                              or ry + self._costume.height > itch.stage.STAGE_HEIGHT
+                              or ry <= 0)
 
     # Non-scratch mapped public methods
 
