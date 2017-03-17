@@ -19,7 +19,7 @@ def scratch_dir_to_degrees(sd):
         norm = abs(norm)
     else:
         norm = 360 - norm
-    return norm + 90
+    return (norm + 90) % 360
 
 
 def to_real_coord(coords):

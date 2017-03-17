@@ -32,7 +32,7 @@ class Costume:
 
         if self.rotation_style == Rotate.all_around:
             self._transformed_image = pygame.transform.rotate(self._image, degrees)
-        elif self.rotation_style == Rotate.left_right and degrees < 0:
+        elif self.rotation_style == Rotate.left_right and (90 < degrees < 270):
             self._transformed_image = pygame.transform.flip(self._image, True, False)
         else:
             self._transformed_image = self._image

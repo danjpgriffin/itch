@@ -11,13 +11,13 @@ class Sprite(EventReceiver):
     class _DirectionDescriptor:
 
         def __set__(self, obj, val):
-            if val < -179:
-                val = val % 360 - 180
-            elif val > 180:
-                val = val % 360 - 360
+            norm = val % 360
 
-            setattr(obj, "_priv_direction", val)
-            getattr(obj, "_costume").rotate(scratch_dir_to_degrees(val))
+            if norm > 180:
+                norm -= 360
+
+            setattr(obj, "_priv_direction", norm)
+            getattr(obj, "_costume").rotate(scratch_dir_to_degrees(norm))
 
         def __get__(self, obj, objtype):
             return getattr(obj, "_priv_direction")
@@ -158,6 +158,10 @@ class Sprite(EventReceiver):
 
     def touching_mouse_pointer(self):
         return self._schedule(self.hit_test(read_mouse()))
+
+    def touching_color(self, color):
+        mask = self._stage.mask_without_sprite_filtered_by_color(self, color)
+        return self._schedule(mask.overlap_area(self._costume.mask, self._real_coords()) > 0)
 
     def touching_edge(self):
         (rx, ry) = self._real_coords()
