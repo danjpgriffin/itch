@@ -5,13 +5,8 @@ import pygame
 import itch.data_view
 import itch.utils
 
-STAGE_WIDTH = 480
-STAGE_HEIGHT = 360
-
-
 class DataContainer:
     pass
-
 
 class PendingEvent:
 
@@ -21,6 +16,9 @@ class PendingEvent:
 
 
 class Stage(EventReceiver):
+
+    STAGE_WIDTH = 480
+    STAGE_HEIGHT = 360
 
     WHITE = (255, 255, 255)
 
@@ -90,8 +88,8 @@ class Stage(EventReceiver):
         target = (0, 0, 0, 255)
         threshold = (8, 8, 8, 0)
 
-        render_surface = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
-        threshold_surface = pygame.Surface((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT), pygame.SRCALPHA)
+        render_surface = pygame.Surface((itch.Stage.STAGE_WIDTH, itch.Stage.STAGE_HEIGHT), pygame.SRCALPHA)
+        threshold_surface = pygame.Surface((itch.Stage.STAGE_WIDTH, itch.Stage.STAGE_HEIGHT), pygame.SRCALPHA)
 
         if self._costume.current_image():
             render_surface.blit(self._costume.current_image(), (0, 0))

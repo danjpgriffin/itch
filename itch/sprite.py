@@ -1,7 +1,7 @@
 import math
 
 from itch.costume import Costume
-import itch.stage
+import itch
 from itch.event_receiver import EventReceiver
 from itch.utils import scratch_dir_to_degrees, read_mouse, to_real_coord
 
@@ -98,13 +98,13 @@ class Sprite(EventReceiver):
     def if_on_edge_bounce(self):
         (rx, ry) = self._real_coords()
 
-        if rx + self._costume.width > itch.stage.STAGE_WIDTH:
+        if rx + self._costume.width > itch.Stage.STAGE_WIDTH:
             self._direction = -self._direction
 
         if rx <= 0:
             self._direction = -self._direction
 
-        if ry + self._costume.height > itch.stage.STAGE_HEIGHT:
+        if ry + self._costume.height > itch.Stage.STAGE_HEIGHT:
             self._direction = - self._direction + 180
 
         if ry <= 0:
@@ -165,9 +165,9 @@ class Sprite(EventReceiver):
 
     def touching_edge(self):
         (rx, ry) = self._real_coords()
-        return self._schedule(rx + self._costume.width > itch.stage.STAGE_WIDTH
+        return self._schedule(rx + self._costume.width > itch.Stage.STAGE_WIDTH
                               or rx <= 0
-                              or ry + self._costume.height > itch.stage.STAGE_HEIGHT
+                              or ry + self._costume.height > itch.Stage.STAGE_HEIGHT
                               or ry <= 0)
 
     # Non-scratch mapped public methods

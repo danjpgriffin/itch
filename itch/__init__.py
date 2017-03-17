@@ -1,12 +1,12 @@
-import pygame
-
+from itch.stage import Stage
 from itch.sched import Scheduler
-import itch.stage
 from itch.utils import read_mouse, Rotate
+
+import pygame
 
 default_scheduler = Scheduler()
 
-stage = itch.stage.Stage(scheduler=default_scheduler)
+stage = Stage(scheduler=default_scheduler)
 data = stage.data_container
 
 
@@ -43,7 +43,7 @@ def click_green_flag():
 
     pygame.init()
     pygame.font.init()
-    screen = pygame.display.set_mode((itch.stage.STAGE_WIDTH, itch.stage.STAGE_HEIGHT))
+    screen = pygame.display.set_mode((Stage.STAGE_WIDTH, Stage.STAGE_HEIGHT))
     pygame.display.set_caption("Hello Itch")
 
     pygame.key.set_repeat(1, 5)
@@ -83,4 +83,3 @@ def click_green_flag():
             default_scheduler.sync_clock()
         else:
             pygame.quit()
-

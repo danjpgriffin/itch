@@ -1,4 +1,5 @@
-from itch.pyscratch import *
+from itch import *
+
 cat = create_sprite(-150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
 cat2 = create_sprite(-150, -100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
 cat.set_rotation_style(Rotate.left_right)

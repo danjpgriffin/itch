@@ -1,4 +1,5 @@
-from itch.pyscratch import *
+from itch import *
+
 cat = create_sprite(-150, 100, ("cat-a", "resources/cat.png"), ("cat-b", "resources/cat2.png"))
 fish = create_sprite(150, 0, "resources/fish.png")
 fish2 = create_sprite(-150, -100, "resources/fish.png")
