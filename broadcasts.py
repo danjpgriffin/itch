@@ -18,7 +18,7 @@ def when_green_flag_clicked():
 
 
 @on(cat)
-def go_running():
+def when_i_receive_go_running():
     while not cat.touching_edge():
         cat.move_steps(10)
 
@@ -26,7 +26,7 @@ def go_running():
 
 
 @on(cat)
-def hit_edge():
+def when_i_receive_hit_edge():
     cat.turn_clockwise(180)
     cat.move_steps(10)
 

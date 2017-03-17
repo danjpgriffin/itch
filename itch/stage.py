@@ -107,6 +107,9 @@ class Stage(EventReceiver):
         return mask
 
     def broadcast(self, event_name):
+        self.system_broadcast("when_i_receive_" + event_name)
+
+    def system_broadcast(self, event_name):
         self._pending_events.append(PendingEvent(event_name, itch.utils.read_mouse()))
 
     def fire_all_events(self):

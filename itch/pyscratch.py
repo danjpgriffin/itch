@@ -48,7 +48,7 @@ def click_green_flag():
 
     pygame.key.set_repeat(1, 5)
 
-    stage.broadcast("when_green_flag_clicked")
+    stage.system_broadcast("when_green_flag_clicked")
 
     done = False
     while not done:
@@ -58,20 +58,20 @@ def click_green_flag():
             if event.type == pygame.QUIT:
                 done = True
             if event.type == pygame.MOUSEBUTTONDOWN:
-                stage.broadcast("mouse_clicked")
+                stage.system_broadcast("mouse_clicked")
             if event.type == pygame.KEYDOWN:
                 if (48 <= event.key <= 57) or (97 <= event.key <= 122):
-                    stage.broadcast("when_" + chr(event.key) + "_key_pressed")
+                    stage.system_broadcast("when_" + chr(event.key) + "_key_pressed")
                 if event.key == 32:
-                    stage.broadcast("when_space_key_pressed")
+                    stage.system_broadcast("when_space_key_pressed")
                 if event.key == 275:
-                    stage.broadcast("when_right_arrow_key_pressed")
+                    stage.system_broadcast("when_right_arrow_key_pressed")
                 if event.key == 276:
-                    stage.broadcast("when_left_arrow_key_pressed")
+                    stage.system_broadcast("when_left_arrow_key_pressed")
                 if event.key == 273:
-                    stage.broadcast("when_up_arrow_key_pressed")
+                    stage.system_broadcast("when_up_arrow_key_pressed")
                 if event.key == 274:
-                    stage.broadcast("when_down_arrow_key_pressed")
+                    stage.system_broadcast("when_down_arrow_key_pressed")
 
         stage.fire_all_events()
         stage.run_all_tasks_until_reschedule()
