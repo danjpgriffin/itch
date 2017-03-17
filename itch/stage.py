@@ -24,6 +24,7 @@ class Stage(EventReceiver):
         self.sprite_list = []
         self.data_container = DataContainer()
         self.data_views = []
+        self._pending_events = []
 
     def load_backdrops(self, *image_sources):
         self._costume = itch.costume.Costume(image_sources)
@@ -98,17 +99,23 @@ class Stage(EventReceiver):
 
         return mask
 
-    def broadcast(self, name):
+    def broadcast(self, event_name):
+        self._pending_events.append(event_name)
 
-        if name == "mouse_clicked":
-            under = self.receiver_at(itch.utils.read_mouse())
-            if isinstance(under, itch.sprite.Sprite):
-                under.trigger_event("when_this_sprite_clicked")
+    def fire_all_events(self):
+
+        for event_name in self._pending_events:
+            if event_name == "mouse_clicked":
+                under = self.receiver_at(itch.utils.read_mouse())
+                if isinstance(under, itch.sprite.Sprite):
+                    under.trigger_event("when_this_sprite_clicked")
+                else:
+                    under.trigger_event("when_stage_clicked")
             else:
-                under.trigger_event("when_stage_clicked")
-        else:
-            for receiver in self.receivers():
-                receiver.trigger_event(name)
+                for receiver in self.receivers():
+                    receiver.trigger_event(event_name)
+
+        self._pending_events.clear()
 
     def run_all_tasks_until_reschedule(self):
         for receiver in self.receivers():

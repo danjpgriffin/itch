@@ -73,6 +73,7 @@ def click_green_flag():
                 if event.key == 274:
                     stage.broadcast("when_down_arrow_key_pressed")
 
+        stage.fire_all_events()
         stage.run_all_tasks_until_reschedule()
 
         if not done:
