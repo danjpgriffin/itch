@@ -13,6 +13,13 @@ class DataContainer:
     pass
 
 
+class PendingEvent:
+
+    def __init__(self, name, mouse_coords):
+        self.name = name
+        self.mouse_coords = mouse_coords
+
+
 class Stage(EventReceiver):
 
     WHITE = (255, 255, 255)
@@ -100,20 +107,20 @@ class Stage(EventReceiver):
         return mask
 
     def broadcast(self, event_name):
-        self._pending_events.append(event_name)
+        self._pending_events.append(PendingEvent(event_name, itch.utils.read_mouse()))
 
     def fire_all_events(self):
 
-        for event_name in self._pending_events:
-            if event_name == "mouse_clicked":
-                under = self.receiver_at(itch.utils.read_mouse())
+        for pending_event in self._pending_events:
+            if pending_event.name == "mouse_clicked":
+                under = self.receiver_at(pending_event.mouse_coords)
                 if isinstance(under, itch.sprite.Sprite):
                     under.trigger_event("when_this_sprite_clicked")
                 else:
                     under.trigger_event("when_stage_clicked")
             else:
                 for receiver in self.receivers():
-                    receiver.trigger_event(event_name)
+                    receiver.trigger_event(pending_event.name)
 
         self._pending_events.clear()
 
