@@ -3,5 +3,5 @@ __pycache__/
 *.iml
 build/
 dist/
-itch.egg-info/
+*.egg-info/
 
