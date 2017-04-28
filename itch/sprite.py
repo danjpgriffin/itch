@@ -113,7 +113,7 @@ class Sprite(EventReceiver):
         self._schedule()
 
     def set_rotation_style(self, style):
-        self._costume.rotation_style = style
+        self._costume.set_rotation_style(style)
         self._schedule()
 
     def x_position(self):

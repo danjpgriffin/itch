@@ -19,7 +19,7 @@ class Costume:
         self._image = None
         self._transformed_image = None
         self.mask = None
-        self.rotation_style = Rotate.all_around
+        self._rotation_style = Rotate.all_around
         self.prepare_image()
 
     def prepare_image(self):
@@ -30,14 +30,18 @@ class Costume:
     def rotate(self, degrees):
         self._rotation = degrees
 
-        if self.rotation_style == Rotate.all_around:
+        if self._rotation_style == Rotate.all_around:
             self._transformed_image = pygame.transform.rotate(self._image, degrees)
-        elif self.rotation_style == Rotate.left_right and (90 < degrees < 270):
+        elif self._rotation_style == Rotate.left_right and (90 < degrees < 270):
             self._transformed_image = pygame.transform.flip(self._image, True, False)
         else:
             self._transformed_image = self._image
 
         self.mask = pygame.mask.from_surface(self._transformed_image)
+
+    def set_rotation_style(self, style):
+        self._rotation_style = style
+        self.prepare_image()
 
     def select_named(self, costume_name):
         self._selected = [item[0] for item in self._image_collection].index(costume_name)
